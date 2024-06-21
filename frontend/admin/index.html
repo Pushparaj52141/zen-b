@@ -7,15 +7,12 @@
     <link rel="stylesheet" href="/frontend/admin/style.css">
     <link rel="stylesheet" href="/frontend/assets/dist/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
-
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
-
       body {
-    font-family: 'Poppins', sans-serif;
-    background-color: white;
-}
-
-       
+        font-family: 'Poppins', sans-serif;
+        background-color: white;
+      }
     </style>
 </head>
 <body>
@@ -50,6 +47,12 @@
             </div>
             <div id="mobile_only_nav" class="mobile-only-nav pull-right">
                 <ul class="nav navbar-right top-nav pull-right">
+                    <li>
+                        <a id="toggle_filter" href="javascript:void(0);" style="font-size: 1.5em; font-weight: bold;">
+                            <i class="fa fa-filter"></i>
+                        </a>
+                        
+                    </li>
                     <li>
                         <a id="open_right_sidebar" href="#"><i class="zmdi zmdi-settings top-nav-icon"></i></a>
                     </li>
@@ -176,44 +179,27 @@
                 </ul>
             </div>
         </nav>
-    
-        <!-- Filter options container -->
-        <div id="filter_options" class="filter-options" style="display:none;">
-            <div class="filter-option">
-                <label for="filter_course">Course:</label>
-                <select id="filter_course">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <div class="filter-option">
-                <label for="filter_status">Status:</label>
-                <select id="filter_status">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
-        </div>
-        <!-- Filter options container -->
-        <div id="filter_options" class="filter-options" style="display:none;">
-            <div class="filter-option">
-                <label for="filter_course">Course:</label>
-                <select id="filter_course">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <div class="filter-option">
-                <label for="filter_status">Status:</label>
-                <select id="filter_status">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
-        </div>
         
+
+        <!-- Filter options container -->
+        <div id="filter_options" class="filter-options" style="display:none;">
+            <div class="filter-option">
+                <label for="filter_course">Course:</label>
+                <select id="filter_course">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-option">
+                <label for="filter_status">Status:</label>
+                <select id="filter_status">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
+        </div>
+
         <!-- /Top Menu Items -->
 
         <!-- Left Sidebar Menu -->
@@ -241,7 +227,7 @@
                         <div class="clearfix"></div>
                     </a>
                 </li>
-                
+
                 <li>
                     <a href="enquiry.html">
                         <div class="pull-left">
@@ -314,7 +300,6 @@
                         <div class="clearfix"></div>
                     </a>
                 </li>
-
             </ul>
         </div>
         <!-- /Left Sidebar Menu -->
@@ -322,12 +307,11 @@
         <div class="page-wrapper">
             <div class="container-fluid">
 
-             <button class="addlead btn btn-danger" data-toggle="modal" data-target="#leadFormModal">+ Add Lead</button>
-            
-        
+                <button class="addlead btn btn-danger" data-toggle="modal" data-target="#leadFormModal">+ Add Lead</button>
+
                 <button class="addtrainer btn btn-primary mt-3" id="addTrainerBtn" data-toggle="modal" data-target="#addTrainerModal">+ Add Trainer</button>
-        
-                <!-- Modal -->
+
+                <!-- Add Trainer Modal -->
                 <div class="modal fade" id="addTrainerModal" tabindex="-1" aria-labelledby="addTrainerModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -353,10 +337,9 @@
                             </div>
                         </div>
                     </div>
-            </div>
-        
-             
+                </div>
 
+                <!-- Add Lead Modal -->
                 <div class="modal fade" id="leadFormModal" tabindex="-1" role="dialog" aria-labelledby="leadFormModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -525,11 +508,11 @@
                         <div class="leads"></div>
                     </div>
                     <div class="status-section" id="hands-on-project" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h2 class="phase bg-blue">Hands on Project <span class="card-count"></span></h2>
+                        <h2 class="phase bg-blue">Hands on Project<span class="card-count"></span></h2>
                         <div class="leads"></div>
                     </div>
                     <div class="status-section" id="certificate-completion" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h2 class="phase bg-pink">Cert-Completion<span class="card-count"></span></h2>
+                        <h2 class="phase bg-pink">Certificate Completion<span class="card-count"></span></h2>
                         <div class="leads"></div>
                     </div>
                     <div class="status-section" id="cv-build" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -537,94 +520,90 @@
                         <div class="leads"></div>
                     </div>
                     <div class="status-section" id="mock-interviews" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h2 class="phase bg-sky">Mock Interviews <span class="card-count"></span></h2>
+                        <h2 class="phase bg-sky">Mock Interviews<span class="card-count"></span></h2>
                         <div class="leads"></div>
                     </div>
                     <div class="status-section" id="placement" ondrop="drop(event)" ondragover="allowDrop(event)">
                         <h2 class="phase bg-egg">Placement<span class="card-count"></span></h2>
                         <div class="leads"></div>
                     </div>
-                    
+                </div>
+                
+                
+
+                <!-- Lead Modal -->
+                <div id="leadModal" class="modal">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Lead Details</h5>
+                                <span class="close">&times;</span>
+                            </div>
+                            <div class="modal-body" id="modalDetails"></div>
+                            <form id="editLeadForm">
+                                <div class="form-step form-step-active">
+                                    <input type="text" name="name" placeholder="Name" required class="form-control mb-3">
+                                    <input type="text" name="mobile_number" placeholder="Mobile Number" required class="form-control mb-3">
+                                    <input type="email" name="email" placeholder="Email" required class="form-control mb-3">
+                                    <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                                </div>
+                                <div class="form-step">
+                                    <input type="text" name="role" placeholder="Role" required class="form-control mb-3">
+                                    <input type="text" name="college_company" placeholder="College/Company" required class="form-control mb-3">
+                                    <input type="text" name="location" placeholder="Location" required class="form-control mb-3">
+                                    <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                                    <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                                </div>
+                                <div class="form-step">
+                                    <input type="text" name="source" placeholder="Source" required class="form-control mb-3">
+                                    <input type="text" name="course_type" placeholder="Course Type" required class="form-control mb-3">
+                                    <input type="text" name="course" placeholder="Course" required class="form-control mb-3">
+                                    <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                                    <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                                </div>
+                                <div class="form-step">
+                                    <input type="text" name="batch_name" placeholder="Batch Name" required class="form-control mb-3">
+                                    <input type="text" name="trainer_name" placeholder="Trainer Name" required class="form-control mb-3">
+                                    <input type="text" name="trainer_mobile" placeholder="Trainer Mobile" required class="form-control mb-3">
+                                    <input type="email" name="trainer_email" placeholder="Trainer Email" required class="form-control mb-3">
+                                    <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                                    <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                                </div>
+                                <div class="form-step">
+                                    <input type="number" name="actual_fee" placeholder="Actual Fee" required class="form-control mb-3">
+                                    <input type="number" name="discounted_fee" placeholder="Discounted Fee" required class="form-control mb-3">
+                                    <input type="number" name="fee_paid" placeholder="Fee Paid" required class="form-control mb-3">
+                                    <input type="number" name="fee_balance" placeholder="Fee Balance" required class="form-control mb-3">
+                                    <textarea name="comments" placeholder="Comments" class="form-control mb-3"></textarea>
+                                    <select name="status" required class="form-control mb-3">
+                                        <option value="Enquiry">Archived</option>
+                                        <option value="Enquiry">Enquiry</option>
+                                        <option value="Enrollment">Enrollment</option>
+                                        <option value="Training Progress">Training Progress</option>
+                                        <option value="Hands on Project">Hands on Project</option>
+                                        <option value="Certificate Completion">Certificate Completion</option>
+                                        <option value="CV Build">CV Build</option>
+                                        <option value="Mock Interview">Mock Interviews</option>
+                                        <option value="Placement">Placement</option>
+                                    </select>
+                                    <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                                    <button type="submit" class="btn btn-success float-right">Save Changes</button>
+                                </div>
+                            </form>
+                            <div class="modal-footer d-flex justify-content-between">
+                                <button id="editLeadButton" class="btn btn-warning">Edit</button>
+                                <button id="deleteLeadButton" class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-         
-  
-                <!-- Modal -->
-    <div id="leadModal" class="modal">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Lead Details</h5>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="modal-body" id="modalDetails"></div>
-                <form id="editLeadForm">
-                    <div class="form-step form-step-active">
-                        <input type="text" name="name" placeholder="Name" required class="form-control mb-3">
-                        <input type="text" name="mobile_number" placeholder="Mobile Number" required class="form-control mb-3">
-                        <input type="email" name="email" placeholder="Email" required class="form-control mb-3">
-                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
-                    </div>
-                    <div class="form-step">
-                        <input type="text" name="role" placeholder="Role" required class="form-control mb-3">
-                        <input type="text" name="college_company" placeholder="College/Company" required class="form-control mb-3">
-                        <input type="text" name="location" placeholder="Location" required class="form-control mb-3">
-                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
-                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
-                    </div>
-                    <div class="form-step">
-                        <input type="text" name="source" placeholder="Source" required class="form-control mb-3">
-                        <input type="text" name="course_type" placeholder="Course Type" required class="form-control mb-3">
-                        <input type="text" name="course" placeholder="Course" required class="form-control mb-3">
-                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
-                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
-                    </div>
-                    <div class="form-step">
-                        <input type="text" name="batch_name" placeholder="Batch Name" required class="form-control mb-3">
-                        <input type="text" name="trainer_name" placeholder="Trainer Name" required class="form-control mb-3">
-                        <input type="text" name="trainer_mobile" placeholder="Trainer Mobile" required class="form-control mb-3">
-                        <input type="email" name="trainer_email" placeholder="Trainer Email" required class="form-control mb-3">
-                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
-                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
-                    </div>
-                    <div class="form-step">
-                        <input type="number" name="actual_fee" placeholder="Actual Fee" required class="form-control mb-3">
-                        <input type="number" name="discounted_fee" placeholder="Discounted Fee" required class="form-control mb-3">
-                        <input type="number" name="fee_paid" placeholder="Fee Paid" required class="form-control mb-3">
-                        <input type="number" name="fee_balance" placeholder="Fee Balance" required class="form-control mb-3">
-                        <textarea name="comments" placeholder="Comments" class="form-control mb-3"></textarea>
-                        <select name="status" required class="form-control mb-3">
-                            <option value="Enquiry">Archived</option>
-                            <option value="Enquiry">Enquiry</option>
-                            <option value="Enrollment">Enrollment</option>
-                            <option value="Training Progress">Training Progress</option>
-                            <option value="Hands on Project">Hands on Project</option>
-                            <option value="Certificate Completion">Certificate Completion</option>
-                            <option value="CV Build">CV Build</option>
-                            <option value="Mock Interview">Mock Interviews</option>
-                            <option value="Placement">Placement</option>
-                        </select>
-                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
-                        <button type="submit" class="btn btn-success float-right">Save Changes</button>
-                    </div>
-                </form>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button id="editLeadButton" class="btn btn-warning">Edit</button>
-                    <button id="deleteLeadButton" class="btn btn-danger">Delete</button>
-                </div>
             </div>
         </div>
     </div>
 
-
-<script>
-
-</script>
-        
-
     <script src="admin.js"></script>
     <!-- jQuery -->
-    
     <script src="/frontend/assets/vendors/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="/frontend/assets/vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -634,7 +613,8 @@
     <script src="/frontend/assets/dist/js/dropdown-bootstrap-extended.js"></script>
     <!-- Init JavaScript -->
     <script src="/frontend/assets/dist/js/init.js"></script>
-
+  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 </html>

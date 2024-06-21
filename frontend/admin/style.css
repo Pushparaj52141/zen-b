@@ -381,7 +381,7 @@ button:hover {
 .filter-options {
     position: fixed;
     top: 60px;
-    right:700px;
+    right:200px;
     background-color: white;
     padding: 45px;
     border: 1px solid #ccc;

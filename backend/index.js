@@ -53,7 +53,7 @@ app.post('/login', async (req, res) => {
 
 
 
-app.post('/addTrainer', async (req, res) => {
+app.post('/addTrainer', authenticateToken, async (req, res) => {
     const { username, password } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -87,7 +87,7 @@ function generateEnrollmentID() {
 }
 
 // Get leads for trainers
-app.get('/trainer/leads', async (req, res) => {
+app.get('/trainer/leads', authenticateToken, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM leads WHERE status IN ($1, $2, $3, $4, $5, $6)', [
             'Training Progress',
@@ -132,7 +132,7 @@ app.post('/leads', authenticateToken, async (req, res) => {
 });
 
 // Update a lead by ID
-app.put('/leads/:id', authenticateToken, async (req, res) => {
+app.put('/leads/:id',authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status } = req.body;
     let enrollment_id = null;
@@ -176,7 +176,7 @@ app.put('/trainer/leads/:id', authenticateToken, async (req, res) => {
 });
 
 // Delete a lead by ID for trainers
-app.delete('/trainer/leads/:id', authenticateToken, async (req, res) => {
+app.delete('/trainer/leads/:id',authenticateToken, async (req, res) => {
     const { id } = req.params;
     try {
         await pool.query('DELETE FROM leads WHERE lead_id = $1', [id]);
@@ -196,7 +196,7 @@ app.get('/courses', async (req, res) => {
     }
 });
 
-app.get('/statuses', async (req, res) => {
+app.get('/statuses',async (req, res) => {
     try {
         const result = await pool.query('SELECT DISTINCT status FROM leads');
         res.json(result.rows);
