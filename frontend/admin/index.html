@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/frontend/admin/style.css">
+    <link rel="stylesheet" href="/frontend/assets/dist/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+
+    <style>
+
+      body {
+    font-family: 'Poppins', sans-serif;
+    background-color: white;
+}
+
+       
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader-it">
+        <div class="la-anim-1"></div>
+    </div>
+    <!-- /Preloader -->
+    <div class="wrapper theme-1-active pimary-color-red">
+        <!-- Top Menu Items -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="mobile-only-brand pull-left">
+                <div class="nav-header pull-left">
+                    <div class="logo-wrap">
+                        <a href="index.html">
+                            <img class="brand-img" src="/frontend/assets/dist/img/logo.png" alt="brand"/>
+                            <span class="brand-text">Zen</span>
+                        </a>
+                    </div>
+                </div>
+                <a id="toggle_nav_btn" class="toggle-left-nav-btn inline-block ml-20 pull-left" href="javascript:void(0);"><i class="zmdi zmdi-menu"></i></a>
+                <a id="toggle_mobile_search" data-toggle="collapse" data-target="#search_form" class="mobile-only-view" href="javascript:void(0);"><i class="zmdi zmdi-search"></i></a>
+                <a id="toggle_mobile_nav" class="mobile-only-view" href="javascript:void(0);"><i class="zmdi zmdi-more"></i></a>
+                <form id="search_form" role="search" class="top-nav-search collapse pull-left">
+                    <div class="input-group">
+                        <input type="text" name="example-input1-group2" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" data-target="#search_form" data-toggle="collapse" aria-label="Close" aria-expanded="true"><i class="zmdi zmdi-search"></i></button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div id="mobile_only_nav" class="mobile-only-nav pull-right">
+                <ul class="nav navbar-right top-nav pull-right">
+                    <li>
+                        <a id="open_right_sidebar" href="#"><i class="zmdi zmdi-settings top-nav-icon"></i></a>
+                    </li>
+                    <li class="dropdown app-drp">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="zmdi zmdi-apps top-nav-icon"></i></a>
+                        <ul class="dropdown-menu app-dropdown" data-dropdown-in="slideInRight" data-dropdown-out="flipOutX">
+                            <li>
+                                <div class="app-nicescroll-bar">
+                                    <ul class="app-icon-wrap pa-10">
+                                        <li>
+                                            <a href="https://mail.google.com/" class="connection-item">
+                                                <i class="zmdi zmdi-email-open txt-success"></i>
+                                                <span class="block">e-mail</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="calendar.html" class="connection-item">
+                                                <i class="zmdi zmdi-calendar-check txt-primary"></i>
+                                                <span class="block">calendar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="contact-card.html" class="connection-item">
+                                                <i class="zmdi zmdi-assignment-account"></i>
+                                                <span class="block">contact</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="app-box-">
+                                    <hr class="light-grey-hr ma-0"/>
+                                    <a class="block text-center read-all" href="javascript:void(0)"> more </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown alert-drp">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="zmdi zmdi-notifications top-nav-icon"></i><span class="top-nav-icon-badge">5</span></a>
+                        <ul class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn" data-dropdown-out="bounceOut">
+                            <li>
+                                <div class="notification-box-head-wrap">
+                                    <span class="notification-box-head pull-left inline-block">notifications</span>
+                                    <a class="txt-danger pull-right clear-notifications inline-block" href="javascript:void(0)"> clear all </a>
+                                    <div class="clearfix"></div>
+                                    <hr class="light-grey-hr ma-0"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="streamline message-nicescroll-bar">
+                                    <div class="sl-item">
+                                        <a href="javascript:void(0)">
+                                            <div class="icon bg-green">
+                                                <i class="zmdi zmdi-flag"></i>
+                                            </div>
+                                            <div class="sl-content">
+                                                <span class="inline-block capitalize-font pull-left truncate head-notifications">
+                                                New Enquiry Added:</span>
+                                                <span class="inline-block font-11 pull-right notifications-time">2pm</span>
+                                                <div class="clearfix"></div>
+                                                <p class="truncate">Stay informed! You've just received a new enquiry.</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="sl-item">
+                                        <a href="javascript:void(0)">
+                                            <div class="icon bg-blue">
+                                                <i class="zmdi zmdi-email"></i>
+                                            </div>
+                                            <div class="sl-content">
+                                                <span class="inline-block capitalize-font pull-left truncate head-notifications">Update</span>
+                                                <span class="inline-block font-11 pull-right notifications-time">4pm</span>
+                                                <div class="clearfix"></div>
+                                                <p class="truncate"> Ranjith has been moved to the enrollment card</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <hr class="light-grey-hr ma-0"/>
+                                    <div class="sl-item">
+                                        <a href="javascript:void(0)">
+                                            <div class="icon bg-red">
+                                                <i class="zmdi zmdi-storage"></i>
+                                            </div>
+                                            <div class="sl-content">
+                                                <span class="inline-block capitalize-font pull-left truncate head-notifications txt-danger">Server Space Update</span>
+                                                <span class="inline-block font-11 pull-right notifications-time">1pm</span>
+                                                <div class="clearfix"></div>
+                                                <p class="truncate">Currently, 70% of server space is available.</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="notification-box-bottom-wrap">
+                                    <hr class="light-grey-hr ma-0"/>
+                                    <a class="block text-center read-all" href="javascript:void(0)"> read all </a>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown auth-drp">
+                        <a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="/frontend/assets/dist/img/user1.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span></a>
+                        <ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
+                            <li>
+                                <a><i class="zmdi zmdi-account"></i><span>Profile</span></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="zmdi zmdi-card"></i><span>My Tasks</span></a>
+                            </li>
+                            <li>
+                                <a href="https://mail.google.com/"><i class="zmdi zmdi-email"></i><span>Inbox</span></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="zmdi zmdi-power"></i><span>Log Out</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    
+        <!-- Filter options container -->
+        <div id="filter_options" class="filter-options" style="display:none;">
+            <div class="filter-option">
+                <label for="filter_course">Course:</label>
+                <select id="filter_course">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-option">
+                <label for="filter_status">Status:</label>
+                <select id="filter_status">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
+        </div>
+        <!-- Filter options container -->
+        <div id="filter_options" class="filter-options" style="display:none;">
+            <div class="filter-option">
+                <label for="filter_course">Course:</label>
+                <select id="filter_course">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="filter-option">
+                <label for="filter_status">Status:</label>
+                <select id="filter_status">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
+        </div>
+        
+        <!-- /Top Menu Items -->
+
+        <!-- Left Sidebar Menu -->
+        <div class="fixed-sidebar-left">
+            <ul class="nav navbar-nav side-nav nicescroll-bar">
+                <li class="navigation-header">
+                    <span>Main</span>
+                    <i class="zmdi zmdi-more"></i>
+                </li>
+                <li>
+                    <a href="addlead.html">
+                        <div class="pull-left">
+                            <i class="bi bi-person-plus" style="color:red"></i>
+                            <span class="right-nav-text">Add Lead</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="addtrainer.html">
+                        <div class="pull-left">
+                            <i class="bi bi-person-badge" style="color:purple"></i>
+                            <span class="right-nav-text">Add Trainer</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="enquiry.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-email text-danger"></i>
+                            <span class="right-nav-text">Enquiries</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="enrollment.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-check-circle text-warning"></i>
+                            <span class="right-nav-text">Enrollment</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="training-progress.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-book text-success"></i>
+                            <span class="right-nav-text">Training Progress</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="hands-on-project.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-laptop text-primary"></i>
+                            <span class="right-nav-text">Hands On Projects</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="certificate-completion.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-file-text text-pink"></i>
+                            <span class="right-nav-text">Certificate Completion</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="cv-build.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-account-box" style="color:#7a1e8a;"></i>
+                            <span class="right-nav-text">CV Build</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="mock-interviews.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-mic" style="color: #00bffe;"></i>
+                            <span class="right-nav-text">Mock Interviews</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+                <li>
+                    <a href="placement.html">
+                        <div class="pull-left">
+                            <i class="zmdi zmdi-case" style="color:#267f00"></i>
+                            <span class="right-nav-text">Placement</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- /Left Sidebar Menu -->
+
+        <div class="page-wrapper">
+            <div class="container-fluid">
+
+             <button class="addlead btn btn-danger" data-toggle="modal" data-target="#leadFormModal">+ Add Lead</button>
+            
+        
+                <button class="addtrainer btn btn-primary mt-3" id="addTrainerBtn" data-toggle="modal" data-target="#addTrainerModal">+ Add Trainer</button>
+        
+                <!-- Modal -->
+                <div class="modal fade" id="addTrainerModal" tabindex="-1" aria-labelledby="addTrainerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addTrainerModalLabel">Add Trainer</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addTrainerForm">
+                                    <div class="form-group">
+                                        <label for="username">Trainer Username</label>
+                                        <input type="text" id="username" name="username" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" id="password" name="password" class="form-control" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add Trainer</button>
+                                </form>
+                                <div id="adminMessage" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        
+             
+
+                <div class="modal fade" id="leadFormModal" tabindex="-1" role="dialog" aria-labelledby="leadFormModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body lead-form" id="leadFormContainer">
+                                <form class="form-horizontal form-material" id="leadForm">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="modal-header">
+                                        <h5 id="leadFormModalLabel">Lead Form</h5>
+                                    </div>
+                                    <div class="form-step form-step-active">
+                                        <div class="card-header">Basic Information</div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="name" placeholder="Name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="mobile_number" placeholder="Mobile Number" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" name="email" placeholder="Email" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="role" id="roleDropdown">
+                                                <option value="" selected disabled>Select Role</option>
+                                                <option value="Students">Student</option>
+                                                <option value="Professionals">Professional</option>
+                                                <option value="Employees">Employees</option>
+                                                <option value="Entrepreneurs">Entrepreneur</option>
+                                                <option value="Hobbyists">Hobbyist</option>
+                                                <option value="Retirees">Retire</option>
+                                                <option value="Freelancers">Freelancer</option>
+                                                <option value="Parents">Parent</option>
+                                                <option value="Educators">Educator</option>
+                                                <option value="Job Seekers">Job Seeker</option>
+                                                <option value="IT Professionals">IT Professional</option>
+                                                <option value="Software Developers">Software Developer</option>
+                                                <option value="Data Analysts">Data Analyst</option>
+                                                <option value="Data Scientists">Data Scientist</option>
+                                                <option value="Project Managers">Project Manager</option>
+                                                <option value="UX/UI Designers">UX/UI Designer</option>
+                                                <option value="Business Analysts">Business Analyst</option>
+                                                <option value="Digital Marketers">Digital Marketer</option>
+                                                <option value="Web Developers">Web Developer</option>
+                                                <option value="Cybersecurity Professionals">Cybersecurity Professional</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="college_company" placeholder="College/Company">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="location" placeholder="Location">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="source" id="sourceDropdown" required>
+                                                <option value="" selected disabled>Select Source</option>
+                                                <option value="Referral">Referral</option>
+                                                <option value="Advertisement">Advertisement</option>
+                                                <option value="Social Media">Social Media</option>
+                                                <option value="Website">Website</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-primary btn-next">Next</button>
+                                    </div>
+                                    <div class="form-step">
+                                        <div class="card-header">Course Information</div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="course_type" id="courseTypeDropdown" required>
+                                                <option value="" selected disabled>Select Course Type</option>
+                                                <option value="Programming Languages">Programming Languages</option>
+                                                <option value="Database">Database</option>
+                                                <option value="Data Analytics">Data Analytics</option>
+                                                <option value="Data Science">Data Science</option>
+                                                <option value="Data Visualization">Data Visualization</option>
+                                                <option value="Cloud and DevOps">Cloud and DevOps</option>
+                                                <option value="Digital Marketing">Digital Marketing</option>
+                                                <option value="Proficiency Exams">Proficiency Exams</option>
+                                                <option value="Languages">Languages</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="course" id="courseDropdown" required>
+                                                <option value="" selected disabled>Select Course</option>
+                                                <option value="MS SQL">MS SQL</option>
+                                                <option value="Power BI">Power BI</option>
+                                                <option value="Tableau">Tableau</option>
+                                                <option value="Azure">Azure</option>
+                                                <option value="SAS">SAS</option>
+                                                <option value="Core Python">Core Python</option>
+                                                <option value="Core Java">Core Java</option>
+                                                <option value="IELTS">IELTS</option>
+                                                <option value="TOEFL">TOEFL</option>
+                                                <option value="PTE">PTE</option>
+                                                <option value="French">French</option>
+                                                <option value="German">German</option>
+                                                <option value="Data Science">Data Science</option>
+                                                <option value="Digital Marketing">Digital Marketing</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="batch_name" placeholder="Batch Name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="trainer_name" placeholder="Trainer Name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="trainer_mobile" placeholder="Trainer Mobile" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" name="trainer_email" placeholder="Trainer Email" required>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary btn-prev">Previous</button>
+                                        <button type="button" class="btn btn-primary btn-next">Next</button>
+                                    </div>
+                                    <div class="form-step">
+                                        <div class="card-header">Payment Information</div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="actual_fee" placeholder="Actual Fee">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="discounted_fee" placeholder="Discounted Fee">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="fee_paid" placeholder="Fee Paid">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="fee_balance" placeholder="Fee Balance">
+                                        </div>
+                                        <div class="form-group">
+                                            <select name="status" class="form-control" required>
+                                                <option value="Enquiry">Enquiry</option>
+                                                <option value="Enrollment">Enrollment</option>
+                                                <option value="Training Progress">Training Progress</option>
+                                                <option value="Hands on Project">Hands on Project</option>
+                                                <option value="Certificate Completion">Certificate Completion</option>
+                                                <option value="CV Build">CV Build</option>
+                                                <option value="Mock Interview">Mock Interviews</option>
+                                                <option value="Placement">Placement</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea name="comments" class="form-control" placeholder="Comments"></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary btn-prev">Previous</button>
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="leads-container">
+                    <div class="status-section" id="enquiry" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-red">Enquiry<span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="enrollment" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-yellow">Enrollment<span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="training-progress" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-green">Training Progress<span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="hands-on-project" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-blue">Hands on Project <span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="certificate-completion" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-pink">Cert-Completion<span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="cv-build" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-grape">CV Build<span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="mock-interviews" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-sky">Mock Interviews <span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    <div class="status-section" id="placement" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h2 class="phase bg-egg">Placement<span class="card-count"></span></h2>
+                        <div class="leads"></div>
+                    </div>
+                    
+                </div>
+
+         
+  
+                <!-- Modal -->
+    <div id="leadModal" class="modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lead Details</h5>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body" id="modalDetails"></div>
+                <form id="editLeadForm">
+                    <div class="form-step form-step-active">
+                        <input type="text" name="name" placeholder="Name" required class="form-control mb-3">
+                        <input type="text" name="mobile_number" placeholder="Mobile Number" required class="form-control mb-3">
+                        <input type="email" name="email" placeholder="Email" required class="form-control mb-3">
+                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                    </div>
+                    <div class="form-step">
+                        <input type="text" name="role" placeholder="Role" required class="form-control mb-3">
+                        <input type="text" name="college_company" placeholder="College/Company" required class="form-control mb-3">
+                        <input type="text" name="location" placeholder="Location" required class="form-control mb-3">
+                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                    </div>
+                    <div class="form-step">
+                        <input type="text" name="source" placeholder="Source" required class="form-control mb-3">
+                        <input type="text" name="course_type" placeholder="Course Type" required class="form-control mb-3">
+                        <input type="text" name="course" placeholder="Course" required class="form-control mb-3">
+                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                    </div>
+                    <div class="form-step">
+                        <input type="text" name="batch_name" placeholder="Batch Name" required class="form-control mb-3">
+                        <input type="text" name="trainer_name" placeholder="Trainer Name" required class="form-control mb-3">
+                        <input type="text" name="trainer_mobile" placeholder="Trainer Mobile" required class="form-control mb-3">
+                        <input type="email" name="trainer_email" placeholder="Trainer Email" required class="form-control mb-3">
+                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                        <button type="button" class="btn btn-primary btn-next float-right">Next</button>
+                    </div>
+                    <div class="form-step">
+                        <input type="number" name="actual_fee" placeholder="Actual Fee" required class="form-control mb-3">
+                        <input type="number" name="discounted_fee" placeholder="Discounted Fee" required class="form-control mb-3">
+                        <input type="number" name="fee_paid" placeholder="Fee Paid" required class="form-control mb-3">
+                        <input type="number" name="fee_balance" placeholder="Fee Balance" required class="form-control mb-3">
+                        <textarea name="comments" placeholder="Comments" class="form-control mb-3"></textarea>
+                        <select name="status" required class="form-control mb-3">
+                            <option value="Enquiry">Archived</option>
+                            <option value="Enquiry">Enquiry</option>
+                            <option value="Enrollment">Enrollment</option>
+                            <option value="Training Progress">Training Progress</option>
+                            <option value="Hands on Project">Hands on Project</option>
+                            <option value="Certificate Completion">Certificate Completion</option>
+                            <option value="CV Build">CV Build</option>
+                            <option value="Mock Interview">Mock Interviews</option>
+                            <option value="Placement">Placement</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
+                        <button type="submit" class="btn btn-success float-right">Save Changes</button>
+                    </div>
+                </form>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button id="editLeadButton" class="btn btn-warning">Edit</button>
+                    <button id="deleteLeadButton" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+
+</script>
+        
+
+    <script src="admin.js"></script>
+    <!-- jQuery -->
+    
+    <script src="/frontend/assets/vendors/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/frontend/assets/vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Slimscroll JavaScript -->
+    <script src="/frontend/assets/dist/js/jquery.slimscroll.js"></script>
+    <!-- Fancy Dropdown JS -->
+    <script src="/frontend/assets/dist/js/dropdown-bootstrap-extended.js"></script>
+    <!-- Init JavaScript -->
+    <script src="/frontend/assets/dist/js/init.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div>
+        <button id="addTrainerBtn">Add Trainer</button>
+        <div id="adminMessage"></div>
+    </div>
+
+    <!-- Add Trainer Modal -->
+    <div id="addTrainerModal" class="modals">
+        <div class="modal-contents">
+            <span class="close-btn">&times;</span>
+            <form id="addTrainerForm">
+                <label for="trainerUsername">Username</label>
+                <input type="text" id="trainerUsername" name="trainerUsername" required>
+                <label for="trainerPassword">Password</label>
+                <input type="password" id="trainerPassword" name="trainerPassword" required>
+                <button type="submit">Add Trainer</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

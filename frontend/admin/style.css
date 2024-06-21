@@ -1,0 +1,458 @@
+/* styles.css */
+h1 {
+    text-align: center;
+}
+
+.phase {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    font-size: 24px;
+    color: white;
+    width: 310px;
+    height: 70px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.leads-wrapper {
+    padding-bottom: 40px;
+}
+
+.addlead {
+    margin-top: 20px;
+    margin-left: 10px;
+    width: 170px;
+    border-radius: 30px;
+}
+.addtrainer {
+    margin-top: 20px;
+    margin-left: 1020px;
+    width: 170px;
+    border-radius: 30px;
+}
+
+.bg-red { background-color: red; }
+.bg-yellow { background-color: yellow; }
+.bg-green { background-color: green; }
+.bg-blue { background-color: blue; }
+.bg-grape { background-color: #7a1e8a; }
+.bg-egg { background-color:#267f00; }
+.bg-sky { background-color: #00bffe; }
+
+.status-section {
+    flex: 0 0 auto;
+    width: 320px; /* Adjusted width to match the .phase width */
+    margin-right: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Arrange the phase title and leads vertically */
+    overflow: hidden; /* Ensure the section itself does not overflow */
+}
+
+.status-section h2 {
+    flex: 0 0 auto; /* Prevent the phase title from growing */
+}
+
+.status-section .leads {
+    flex: 1 1 auto; /* Allow the leads container to grow and shrink */
+    max-height: 1000px; /* Adjust height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Firefox */
+    overflow: hidden; /* Hide scrollbars until scrolling starts */
+}
+
+/* Webkit scrollbar styling for Chrome, Safari, and Edge */
+.status-section .leads::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent; /* Hide the scrollbar background */
+}
+
+.status-section .leads::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+}
+
+.status-section .leads:hover {
+    overflow-y: auto; /* Show scrollbars on hover */
+}
+button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.modal-form {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+}
+
+.leads-container {
+    display: flex;
+    margin-top: 20px;
+    padding-bottom: 40px; /* Adjusted this value to move the scrollbar down */
+    overflow-x: auto; /* Only horizontally scroll if necessary */
+    gap: 10px;
+}
+
+.lead-card {
+    margin: 20px 10px 10px 0;
+    border-right: 5px solid transparent;
+    border-radius: 5px;
+    padding: 10px;
+    width: 300px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lead-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -5px;
+    width: 5px;
+    background: linear-gradient(to top, #000000, #666666);
+    border-radius: 0 5px 5px 0;
+}
+
+.lead-card .time {
+    text-align: center;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 10px;
+    color: white;
+    padding: 5px;
+    width: 37px;
+    height: 25px;
+    border-radius: 5px;
+}
+
+.modal {
+    display: none; /* Hide by default */
+    position: fixed;
+    z-index: 1050; /* Adjust z-index if necessary */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-dialog {
+    max-width: 500px; /* Adjust max-width if necessary */
+    margin: 1.75rem auto;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.3rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    outline: 0;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+}
+
+.close:hover {
+    color: #000;
+    text-decoration: none;
+    opacity: 0.75;
+}
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal header styling */
+.modal-header {
+    color: white;
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+/* Form container styling */
+.lead-form {
+    padding: 20px;
+}
+
+/* Form step styling */
+.form-step {
+    display: none;
+}
+
+.form-step-active {
+    display: block;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Input and select styling */
+.form-control {
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Button styling */
+.btn {
+    border-radius: 0.25rem;
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Close button styling */
+.close {
+    font-size: 1.4rem;
+    color: #aaa;
+    margin-top: 0%;
+    margin-right: 0%;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* General modal styling */
+.modal-content {
+    border-radius: 0.25rem;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* Adjusted form field and card header width */
+.form-group,
+.card-header {
+    padding: 10px 15px;
+}
+
+.containers {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.trainer-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    border: none;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#adminMessage {
+    margin-top: 20px;
+    color: red;
+}
+
+.modals {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-contents {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+#showAddTrainerForm {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#showAddTrainerForm:hover {
+    background-color: #0056b3;
+}
+
+#showAddTrainerForm:focus {
+    outline: none;
+}
+
+.filter-options {
+    position: fixed;
+    top: 60px;
+    right:700px;
+    background-color: white;
+    padding: 45px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.filter-option {
+    margin-bottom: 10px;
+}
+
+.filter-option label {
+    margin-right: 10px;
+}
+
+.filter-icon {
+    align-items: center;
+    font-size: 30px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    height: 100%;
+    width: 100%;
+    display: none;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.card.active {
+    display: block;
+}
+
+.card-title {
+    color: #333;
+    font-size: small;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.rotate-icon {
+    transform: rotate(100deg);
+}
+
+.card-count {
+    font-size: 16px; /* Adjust as needed */
+    font-weight: bold;
+    color: white; /* Adjust color as needed */
+    padding: 2px 8px;
+    
+    margin-left: 10px;
+    display: inline-block;
+}
