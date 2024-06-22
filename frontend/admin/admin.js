@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const editLeadForm = document.getElementById('editLeadForm');
     const editLeadButton = document.getElementById('editLeadButton');
     const deleteLeadButton = document.getElementById('deleteLeadButton');
-    const closeModalBtn = document.querySelector('.close');
     const filterIcon = document.getElementById('toggle_filter');
     const filterOptions = document.getElementById('filter_options');
     const applyFiltersButton = document.getElementById('apply_filters');
@@ -58,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             steps[currentStep].classList.remove('form-step-active');
             currentStep = 0;
             steps[currentStep].classList.add('form-step-active');
-            leadFormContainer.style.display = 'none';
+            $('#leadFormModal').modal('hide'); // Use jQuery to hide the modal
             fetchLeads();
         } catch (error) {
             console.error('Error:', error);
@@ -66,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Fetch leads and call displayLeads after fetching
     async function fetchLeads() {
         const token = localStorage.getItem('token');
         try {
@@ -101,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return { text: 'Now', isOverADay: false };
         }
     }
+
     function displayLeads(leads) {
         const sections = {
             'enquiry': document.getElementById('enquiry').querySelector('.leads'),
@@ -137,13 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
             let paidStatusText = '';
             if (lead.paid_status.toLowerCase() === 'not paid') {
                 paidStatusColor = 'red';
-              
             } else if (lead.paid_status.toLowerCase() === 'partially paid') {
                 paidStatusColor = 'yellow';
-               
             } else if (lead.paid_status.toLowerCase() === 'paid') {
                 paidStatusColor = 'green';
-           
             }
             
     
@@ -161,8 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Batch: ${lead.batch_name}</p>
                 <span class="time ${timeSpanClass}">${timeDiff.text}</span>
                 <span class="paid-status-circle" style="background-color: ${paidStatusColor}; width: 20px; height: 20px; border-radius: 50%; display: inline-block; position: absolute; bottom: 10px; right: 10px; line-height: 20px;">${paidStatusText}</span>
-
-
             `;
     
             // Add event listeners for click and drag events
@@ -183,9 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCounts(counts);
     }
     
-    
-    
-
     function updateCounts(counts) {
         Object.keys(counts).forEach(status => {
             const section = document.getElementById(status.replace(' ', '-'));
@@ -196,11 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-  
-
     function openModal(lead) {
         currentLead = lead;
-        modalDetails.innerHTML = `
+        document.getElementById('modalDetails').innerHTML = `
             <p><strong><i class="material-icons">person</i> Name:</strong> ${lead.name}</p>
             <p><strong><i class="material-icons">phone</i> Mobile Number:</strong> ${lead.mobile_number}</p>
             <p><strong><i class="material-icons">email</i> Email:</strong> ${lead.email}</p>
@@ -222,15 +211,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong><i class="material-icons">info</i> Status:</strong> ${lead.status}</p>
             <p><strong><i class="material-icons">credit_card</i> Paid Status:</strong> ${lead.paid_status}</p>
         `;
-        editLeadForm.style.display = 'none';
-        modalDetails.style.display = 'block';
-        leadModal.style.display = 'block';
+        document.getElementById('editLeadForm').style.display = 'none';
+        document.getElementById('modalDetails').style.display = 'block';
+        $('#leadModal').modal('show');
     }
     
-
     function closeModal() {
-        leadModal.style.display = 'none';
+        $('#leadModal').modal('hide');
     }
+    
 
     async function editLead() {
         const formData = new FormData(editLeadForm);
@@ -245,16 +234,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(data)
             });
-            const result = await response.json();
+            const updatedLead = await response.json();
+    
+            if (updatedLead.status !== currentLead.status) {
+                fetchLeads();
+            } else {
+                closeModal();
+            }
             alert('Lead updated successfully!');
-            fetchLeads();
-            closeModal();
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to update lead.');
         }
     }
-
+    
     async function deleteLead(leadId) {
         const token = localStorage.getItem('token');
         try {
@@ -289,12 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     deleteLeadButton.onclick = () => deleteLead(currentLead.lead_id);
-    closeModalBtn.onclick = closeModal;
-    window.onclick = (event) => {
-        if (event.target == leadModal) {
-            closeModal();
-        }
-    };
 
     function populateEditForm(lead) {
         Object.entries(lead).forEach(([key, value]) => {
@@ -305,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Drag and Drop Events
     const statusSections = document.querySelectorAll('.status-section');
 
     statusSections.forEach(section => {
@@ -341,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fetch and populate filter options
     async function fetchFilterOptions() {
         try {
             const [coursesResponse, statusesResponse] = await Promise.all([
@@ -370,12 +355,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle filter options visibility
     filterIcon.addEventListener('click', () => {
         filterOptions.style.display = filterOptions.style.display === 'none' ? 'block' : 'none';
     });
 
-    // Apply filters
     applyFiltersButton.addEventListener('click', applyFilters);
 
     function applyFilters() {
@@ -390,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayLeads(filteredLeads);
     }
 
-    // Real-time filtering
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         const filteredLeads = leads.filter(lead => lead.name.toLowerCase().includes(searchTerm));
@@ -411,8 +393,8 @@ document.addEventListener('DOMContentLoaded', () => {
     addTrainerForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const username = document.getElementById('trainerUsername').value;
-        const password = document.getElementById('trainerPassword').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
         const token = localStorage.getItem('token');
 
         try {
@@ -429,8 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.success) {
                 document.getElementById('adminMessage').textContent = 'Trainer added successfully!';
-                // Optionally, close the modal
-                modal.style.display = 'none';
+                $('#addTrainerModal').modal('hide'); // Use jQuery to hide the modal
+                addTrainerForm.reset(); // Reset the form fields
             } else {
                 document.getElementById('adminMessage').textContent = result.message;
             }

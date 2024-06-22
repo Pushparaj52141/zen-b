@@ -163,26 +163,14 @@ button {
     outline: 0;
 }
 
-.close {
-    float: right;
+
+.modal-header .close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
     font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
-    opacity: 0.5;
 }
 
-.close:hover {
-    color: #000;
-    text-decoration: none;
-    opacity: 0.75;
-}
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
 
 /* Modal header styling */
 .modal-header {
@@ -267,17 +255,7 @@ button {
     border-color: #1e7e34;
 }
 
-/* Close button styling */
-.close {
-    font-size: 1.4rem;
-    color: #aaa;
-    margin-top: 0%;
-    margin-right: 0%;
-}
 
-.close:hover {
-    color: #000;
-}
 
 /* General modal styling */
 .modal-content {
