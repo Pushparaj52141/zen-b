@@ -10,19 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const editLeadButton = document.getElementById('editLeadButton');
     const deleteLeadButton = document.getElementById('deleteLeadButton');
     const closeModalBtn = document.querySelector('.close');
+    const filterIcon = document.getElementById('toggle_filter');
+    const filterOptions = document.getElementById('filter_options');
+    const applyFiltersButton = document.getElementById('apply_filters');
+    const searchInput = document.querySelector('#search_form input[name="example-input1-group2"]');
+    const addTrainerForm = document.getElementById('addTrainerForm');
     let currentStep = 0;
     let currentLead = null;
 
-    // Add Lead Button
-    const addLeadButton = document.createElement('button');
-    addLeadButton.id = 'addLeadButton';
-    addLeadButton.textContent = '+ Add Lead';
-    addLeadButton.classList.add('btn', 'btn-danger');
-    document.body.appendChild(addLeadButton);
-
-    addLeadButton.addEventListener('click', () => {
-        leadFormContainer.style.display = 'block';
-    });
+    let leads = [];
 
     nextBtn.forEach(button => {
         button.addEventListener('click', () => {
@@ -56,9 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(data)
             });
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
             const result = await response.json();
             alert('Lead added successfully!');
             form.reset();
@@ -73,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Fetch leads and call displayLeads after fetching
     async function fetchLeads() {
         const token = localStorage.getItem('token');
         try {
@@ -81,105 +75,158 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (!response.ok) {
-                throw new Error('Unauthorized');
-            }
-            const leads = await response.json();
+            leads = await response.json();
+            console.log("Fetched data:", leads);
             displayLeads(leads);
         } catch (error) {
             console.error('Error:', error);
-            if (error.message === 'Unauthorized') {
-                alert('Unauthorized access. Please login again.');
-                window.location.href = '/login';
-            }
         }
-    }
-
-    function displayLeads(leads) {
-        const sections = {
-            'Enquiry': document.getElementById('enquiry').querySelector('.leads'),
-            'Enrollment': document.getElementById('enrollment').querySelector('.leads'),
-            'Training Progress': document.getElementById('training-progress').querySelector('.leads'),
-            'Hands on Project': document.getElementById('hands-on-project').querySelector('.leads'),
-            'Certificate Completion': document.getElementById('certificate-completion').querySelector('.leads'),
-            'CV Build': document.getElementById('cv-build').querySelector('.leads'),
-            'Mock Interviews': document.getElementById('mock-interviews').querySelector('.leads'),
-            'Placement': document.getElementById('placement').querySelector('.leads')
-        };
-
-        Object.values(sections).forEach(section => section.innerHTML = '');
-
-        leads.forEach(lead => {
-            const leadCard = document.createElement('div');
-            leadCard.className = 'lead-card';
-            leadCard.draggable = true;
-            const timeDiff = getTimeDifference(lead.created_at);
-            leadCard.innerHTML = `
-                <h4>${lead.name}</h4>
-                <p>Mobile: ${lead.mobile_number}</p>
-                <p>Course: ${lead.course}</p>
-                <p>Batch: ${lead.batch_name}</p>
-                <span class="time ${timeDiff.isOverADay && lead.status === 'Enquiry' ? 'bg-red' : 'bg-green'}">${timeDiff.text}</span>
-            `;
-            leadCard.addEventListener('click', () => openModal(lead));
-            leadCard.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', JSON.stringify(lead));
-                e.dataTransfer.effectAllowed = 'move';
-            });
-
-            if (sections[lead.status]) {
-                sections[lead.status].appendChild(leadCard);
-            }
-        });
     }
 
     function getTimeDifference(timestamp) {
         const now = new Date();
         const leadDate = new Date(timestamp);
         const differenceInMs = now - leadDate;
-
         const days = Math.floor(differenceInMs / 86400000);
         const hours = Math.floor((differenceInMs % 86400000) / 3600000);
         const minutes = Math.floor((differenceInMs % 3600000) / 60000);
 
         if (days >= 1) {
-            return { text: `${days} day`, isOverADay: true };
+            return { text: `${days}d`, isOverADay: true };
         } else if (hours >= 1) {
-            return { text: `${hours} hr`, isOverADay: false };
+            return { text: `${hours}hr`, isOverADay: false };
         } else if (minutes >= 1) {
-            return { text: `${minutes} min`, isOverADay: false };
+            return { text: `${minutes}min`, isOverADay: false };
         } else {
             return { text: 'Now', isOverADay: false };
         }
     }
+    function displayLeads(leads) {
+        const sections = {
+            'enquiry': document.getElementById('enquiry').querySelector('.leads'),
+            'enrollment': document.getElementById('enrollment').querySelector('.leads'),
+            'training progress': document.getElementById('training-progress').querySelector('.leads'),
+            'hands on project': document.getElementById('hands-on-project').querySelector('.leads'),
+            'certificate completion': document.getElementById('certificate-completion').querySelector('.leads'),
+            'cv build': document.getElementById('cv-build').querySelector('.leads'),
+            'mock interviews': document.getElementById('mock-interviews').querySelector('.leads'),
+            'placement': document.getElementById('placement').querySelector('.leads')
+        };
+    
+        Object.values(sections).forEach(section => section.innerHTML = '');
+    
+        const counts = {
+            'enquiry': 0,
+            'enrollment': 0,
+            'training progress': 0,
+            'hands on project': 0,
+            'certificate completion': 0,
+            'cv build': 0,
+            'mock interviews': 0,
+            'placement': 0
+        };
+    
+        leads.forEach(lead => {
+            const leadCard = document.createElement('div');
+            leadCard.className = 'lead-card';
+            leadCard.draggable = true;
+            const timeDiff = getTimeDifference(lead.created_at);
+    
+            // Determine the background color for the paid status circle
+            let paidStatusColor = '';
+            let paidStatusText = '';
+            if (lead.paid_status.toLowerCase() === 'not paid') {
+                paidStatusColor = 'red';
+              
+            } else if (lead.paid_status.toLowerCase() === 'partially paid') {
+                paidStatusColor = 'yellow';
+               
+            } else if (lead.paid_status.toLowerCase() === 'paid') {
+                paidStatusColor = 'green';
+           
+            }
+            
+    
+            // Determine the class for the time span
+            let timeSpanClass = timeDiff.isOverADay && lead.status.toLowerCase() === 'enquiry' ? 'bg-red' : 'bg-green';
+    
+            console.log('Lead:', lead);
+            console.log('Paid Status Color:', paidStatusColor);
+            console.log('Paid Status Text:', paidStatusText);
+    
+            leadCard.innerHTML = `
+                <h4>${lead.name}</h4>
+                <p>Mobile: ${lead.mobile_number}</p>
+                <p>Course: ${lead.course}</p>
+                <p>Batch: ${lead.batch_name}</p>
+                <span class="time ${timeSpanClass}">${timeDiff.text}</span>
+                <span class="paid-status-circle" style="background-color: ${paidStatusColor}; width: 20px; height: 20px; border-radius: 50%; display: inline-block; position: absolute; bottom: 10px; right: 10px; line-height: 20px;">${paidStatusText}</span>
+
+
+            `;
+    
+            // Add event listeners for click and drag events
+            leadCard.addEventListener('click', () => openModal(lead));
+            leadCard.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', JSON.stringify(lead));
+                e.dataTransfer.effectAllowed = 'move';
+            });
+    
+            const normalizedStatus = lead.status.toLowerCase();
+            if (sections[normalizedStatus]) {
+                sections[normalizedStatus].appendChild(leadCard);
+                counts[normalizedStatus]++;
+            }
+        });
+    
+        console.log('Counts:', counts);
+        updateCounts(counts);
+    }
+    
+    
+    
+
+    function updateCounts(counts) {
+        Object.keys(counts).forEach(status => {
+            const section = document.getElementById(status.replace(' ', '-'));
+            const countElement = section.querySelector('.card-count');
+            if (countElement) {
+                countElement.textContent = ` (${counts[status]})`;
+            }
+        });
+    }
+
+  
 
     function openModal(lead) {
         currentLead = lead;
         modalDetails.innerHTML = `
-            <p><strong>Name:</strong> ${lead.name}</p>
-            <p><strong>Mobile Number:</strong> ${lead.mobile_number}</p>
-            <p><strong>Email:</strong> ${lead.email}</p>
-            <p><strong>Role:</strong> ${lead.role}</p>
-            <p><strong>College/Company:</strong> ${lead.college_company}</p>
-            <p><strong>Location:</strong> ${lead.location}</p>
-            <p><strong>Source:</strong> ${lead.source}</p>
-            <p><strong>Course Type:</strong> ${lead.course_type}</p>
-            <p><strong>Course:</strong> ${lead.course}</p>
-            <p><strong>Batch Name:</strong> ${lead.batch_name}</p>
-            <p><strong>Trainer Name:</strong> ${lead.trainer_name}</p>
-            <p><strong>Trainer Mobile:</strong> ${lead.trainer_mobile}</p>
-            <p><strong>Trainer Email:</strong> ${lead.trainer_email}</p>
-            <p><strong>Actual Fee:</strong> ${lead.actual_fee}</p>
-            <p><strong>Discounted Fee:</strong> ${lead.discounted_fee}</p>
-            <p><strong>Fee Paid:</strong> ${lead.fee_paid}</p>
-            <p><strong>Fee Balance:</strong> ${lead.fee_balance}</p>
-            <p><strong>Comments:</strong> ${lead.comments}</p>
-            <p><strong>Status:</strong> ${lead.status}</p>
+            <p><strong><i class="material-icons">person</i> Name:</strong> ${lead.name}</p>
+            <p><strong><i class="material-icons">phone</i> Mobile Number:</strong> ${lead.mobile_number}</p>
+            <p><strong><i class="material-icons">email</i> Email:</strong> ${lead.email}</p>
+            <p><strong><i class="material-icons">work</i> Role:</strong> ${lead.role}</p>
+            <p><strong><i class="material-icons">business</i> College/Company:</strong> ${lead.college_company}</p>
+            <p><strong><i class="material-icons">location_on</i> Location:</strong> ${lead.location}</p>
+            <p><strong><i class="material-icons">source</i> Source:</strong> ${lead.source}</p>
+            <p><strong><i class="material-icons">class</i> Course Type:</strong> ${lead.course_type}</p>
+            <p><strong><i class="material-icons">book</i> Course:</strong> ${lead.course}</p>
+            <p><strong><i class="material-icons">group</i> Batch Name:</strong> ${lead.batch_name}</p>
+            <p><strong><i class="material-icons">person_outline</i> Trainer Name:</strong> ${lead.trainer_name}</p>
+            <p><strong><i class="material-icons">phone</i> Trainer Mobile:</strong> ${lead.trainer_mobile}</p>
+            <p><strong><i class="material-icons">email</i> Trainer Email:</strong> ${lead.trainer_email}</p>
+            <p><strong><i class="material-icons">attach_money</i> Actual Fee:</strong> ${lead.actual_fee}</p>
+            <p><strong><i class="material-icons">money_off</i> Discounted Fee:</strong> ${lead.discounted_fee}</p>
+            <p><strong><i class="material-icons">paid</i> Fee Paid:</strong> ${lead.fee_paid}</p>
+            <p><strong><i class="material-icons">account_balance_wallet</i> Fee Balance:</strong> ${lead.fee_balance}</p>
+            <p><strong><i class="material-icons">comment</i> Comments:</strong> ${lead.comments}</p>
+            <p><strong><i class="material-icons">info</i> Status:</strong> ${lead.status}</p>
+            <p><strong><i class="material-icons">credit_card</i> Paid Status:</strong> ${lead.paid_status}</p>
         `;
         editLeadForm.style.display = 'none';
         modalDetails.style.display = 'block';
         leadModal.style.display = 'block';
     }
+    
 
     function closeModal() {
         leadModal.style.display = 'none';
@@ -189,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(editLeadForm);
         const data = Object.fromEntries(formData.entries());
         const token = localStorage.getItem('token');
-
         try {
             const response = await fetch(`http://localhost:5000/leads/${currentLead.lead_id}`, {
                 method: 'PUT',
@@ -199,9 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(data)
             });
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
             const result = await response.json();
             alert('Lead updated successfully!');
             fetchLeads();
@@ -221,10 +264,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            const result = await response.json();
-            alert('Lead deleted successfully!');
-            fetchLeads();
-            closeModal();
+            if (response.status === 404) {
+                alert('Lead not found.');
+            } else {
+                alert('Lead deleted successfully!');
+                fetchLeads();
+                closeModal();
+            }
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to delete lead.');
@@ -271,12 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
         section.addEventListener('drop', async (e) => {
             e.preventDefault();
             const leadData = JSON.parse(e.dataTransfer.getData('text/plain'));
-            const newStatus = section.querySelector('h2').innerText;
+            const newStatus = section.querySelector('h2').innerText.toLowerCase();
 
-            if (leadData.status !== newStatus) {
+            if (leadData.status.toLowerCase() !== newStatus) {
                 leadData.status = newStatus;
                 const token = localStorage.getItem('token');
-        
                 try {
                     const response = await fetch(`http://localhost:5000/leads/${leadData.lead_id}`, {
                         method: 'PUT',
@@ -286,9 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         },
                         body: JSON.stringify(leadData)
                     });
-                    if (!response.ok) {
-                        throw new Error(response.statusText);
-                    }
                     const result = await response.json();
                     fetchLeads();
                 } catch (error) {
@@ -299,5 +341,102 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Fetch and populate filter options
+    async function fetchFilterOptions() {
+        try {
+            const [coursesResponse, statusesResponse] = await Promise.all([
+                fetch('http://localhost:5000/courses'),
+                fetch('http://localhost:5000/statuses')
+            ]);
+
+            const courses = await coursesResponse.json();
+            const statuses = await statusesResponse.json();
+
+            populateFilterOptions('filter_course', courses, 'course');
+            populateFilterOptions('filter_status', statuses, 'status');
+        } catch (error) {
+            console.error('Error fetching filter options:', error);
+        }
+    }
+
+    function populateFilterOptions(elementId, options, key) {
+        const selectElement = document.getElementById(elementId);
+        selectElement.innerHTML = '<option value="">All</option>';
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option[key];
+            opt.textContent = option[key];
+            selectElement.appendChild(opt);
+        });
+    }
+
+    // Toggle filter options visibility
+    filterIcon.addEventListener('click', () => {
+        filterOptions.style.display = filterOptions.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Apply filters
+    applyFiltersButton.addEventListener('click', applyFilters);
+
+    function applyFilters() {
+        const courseFilter = document.getElementById('filter_course').value;
+        const statusFilter = document.getElementById('filter_status').value;
+
+        const filteredLeads = leads.filter(lead => {
+            return (courseFilter === '' || lead.course === courseFilter) && 
+                   (statusFilter === '' || lead.status === statusFilter);
+        });
+
+        displayLeads(filteredLeads);
+    }
+
+    // Real-time filtering
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filteredLeads = leads.filter(lead => lead.name.toLowerCase().includes(searchTerm));
+        displayLeads(filteredLeads);
+    });
+
+    document.querySelector('#search_form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredLeads = leads.filter(lead => lead.name.toLowerCase().includes(searchTerm));
+        displayLeads(filteredLeads);
+    });
+
+    fetchFilterOptions();
     fetchLeads();
+
+    // Add Trainer Form Submission
+    addTrainerForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('trainerUsername').value;
+        const password = document.getElementById('trainerPassword').value;
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch('http://localhost:5000/addTrainer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('adminMessage').textContent = 'Trainer added successfully!';
+                // Optionally, close the modal
+                modal.style.display = 'none';
+            } else {
+                document.getElementById('adminMessage').textContent = result.message;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('adminMessage').textContent = 'An error occurred. Please try again.';
+        }
+    });
 });

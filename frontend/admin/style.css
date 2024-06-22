@@ -10,7 +10,7 @@ h1 {
     padding: 10px;
     font-size: 24px;
     color: white;
-    width: 310px;
+    width: 300px;
     height: 70px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -57,7 +57,7 @@ h1 {
 
 .status-section .leads {
     flex: 1 1 auto; /* Allow the leads container to grow and shrink */
-    max-height: 1000px; /* Adjust height as needed */
+    max-height: 800px; /* Adjust height as needed */
     overflow-y: auto; /* Enable vertical scrolling */
     padding: 10px;
     scrollbar-width: thin; /* Firefox */
@@ -79,6 +79,7 @@ h1 {
 .status-section .leads:hover {
     overflow-y: auto; /* Show scrollbars on hover */
 }
+
 button {
     display: block;
     margin: 10px auto;
@@ -381,9 +382,9 @@ button:hover {
 .filter-options {
     position: fixed;
     top: 60px;
-    right:200px;
+    right: 10px;
     background-color: white;
-    padding: 45px;
+    padding: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -398,9 +399,8 @@ button:hover {
 }
 
 .filter-icon {
-    align-items: center;
-    font-size: 30px;
-    margin: 10px;
+    font-size: 20px;
+    margin-left: 20px;
     cursor: pointer;
 }
 
@@ -445,14 +445,4 @@ button:hover {
 
 .rotate-icon {
     transform: rotate(100deg);
-}
-
-.card-count {
-    font-size: 16px; /* Adjust as needed */
-    font-weight: bold;
-    color: white; /* Adjust color as needed */
-    padding: 2px 8px;
-    
-    margin-left: 10px;
-    display: inline-block;
 }

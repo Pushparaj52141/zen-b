@@ -50,9 +50,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
-
-
+// Add trainer route
 app.post('/addTrainer', authenticateToken, async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -64,11 +62,6 @@ app.post('/addTrainer', authenticateToken, async (req, res) => {
         res.json({ success: false, message: 'Something went wrong. Please try again later.' });
     }
 });
-
-
-
-
-
 
 // Protected route example
 app.get('/leads', authenticateToken, async (req, res) => {
@@ -118,11 +111,11 @@ app.get('/leads/:id', authenticateToken, async (req, res) => {
 
 // Add a new lead
 app.post('/leads', authenticateToken, async (req, res) => {
-    const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status } = req.body;
+    const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO leads (name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING *',
-            [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status]
+            'INSERT INTO leads (name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING *',
+            [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -132,9 +125,9 @@ app.post('/leads', authenticateToken, async (req, res) => {
 });
 
 // Update a lead by ID
-app.put('/leads/:id',authenticateToken, async (req, res) => {
+app.put('/leads/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status } = req.body;
+    const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status } = req.body;
     let enrollment_id = null;
 
     try {
@@ -148,8 +141,8 @@ app.put('/leads/:id',authenticateToken, async (req, res) => {
         }
 
         const result = await pool.query(
-            `UPDATE leads SET name = $1, mobile_number = $2, email = $3, role = $4, college_company = $5, location = $6, source = $7, course_type = $8, course = $9, batch_name = $10, trainer_name = $11, trainer_mobile = $12, trainer_email = $13, actual_fee = $14, discounted_fee = $15, fee_paid = $16, fee_balance = $17, comments = $18, status = $19${enrollment_id ? ', enrollment_id = $20' : ''} WHERE lead_id = ${enrollment_id ? '$21' : '$20'} RETURNING *`,
-            enrollment_id ? [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, enrollment_id, id] : [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, id]
+            `UPDATE leads SET name = $1, mobile_number = $2, email = $3, role = $4, college_company = $5, location = $6, source = $7, course_type = $8, course = $9, batch_name = $10, trainer_name = $11, trainer_mobile = $12, trainer_email = $13, actual_fee = $14, discounted_fee = $15, fee_paid = $16, fee_balance = $17, comments = $18, status = $19, paid_status = $20${enrollment_id ? ', enrollment_id = $21' : ''} WHERE lead_id = ${enrollment_id ? '$22' : '$21'} RETURNING *`,
+            enrollment_id ? [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status, enrollment_id, id] : [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status, id]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -161,12 +154,12 @@ app.put('/leads/:id',authenticateToken, async (req, res) => {
 // Update lead status for trainers
 app.put('/trainer/leads/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, comments, status } = req.body;
+    const { name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, comments, status, paid_status } = req.body;
 
     try {
         const result = await pool.query(
-            'UPDATE leads SET name = $1, mobile_number = $2, email = $3, role = $4, college_company = $5, location = $6, source = $7, course_type = $8, course = $9, batch_name = $10, trainer_name = $11, trainer_mobile = $12, trainer_email = $13, comments = $14, status = $15 WHERE lead_id = $16 RETURNING *',
-            [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, comments, status, id]
+            'UPDATE leads SET name = $1, mobile_number = $2, email = $3, role = $4, college_company = $5, location = $6, source = $7, course_type = $8, course = $9, batch_name = $10, trainer_name = $11, trainer_mobile = $12, trainer_email = $13, comments = $14, status = $15, paid_status = $16 WHERE lead_id = $17 RETURNING *',
+            [name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, comments, status, paid_status, id]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -175,17 +168,21 @@ app.put('/trainer/leads/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// Delete a lead by ID for trainers
-app.delete('/trainer/leads/:id',authenticateToken, async (req, res) => {
+// Delete a lead by ID
+app.delete('/leads/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     try {
-        await pool.query('DELETE FROM leads WHERE lead_id = $1', [id]);
+        const result = await pool.query('DELETE FROM leads WHERE lead_id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Lead not found' });
+        }
         res.json({ message: 'Lead deleted successfully' });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: 'Failed to delete lead' });
     }
 });
+
 app.get('/courses', async (req, res) => {
     try {
         const result = await pool.query('SELECT DISTINCT course FROM leads');
@@ -196,7 +193,7 @@ app.get('/courses', async (req, res) => {
     }
 });
 
-app.get('/statuses',async (req, res) => {
+app.get('/statuses', async (req, res) => {
     try {
         const result = await pool.query('SELECT DISTINCT status FROM leads');
         res.json(result.rows);
