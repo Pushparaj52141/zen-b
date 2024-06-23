@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editLeadForm = document.getElementById('editLeadForm');
     const editLeadButton = document.getElementById('editLeadButton');
     const deleteLeadButton = document.getElementById('deleteLeadButton');
+    const archiveLeadButton = document.getElementById('archiveLeadButton');
     const filterIcon = document.getElementById('toggle_filter');
     const filterOptions = document.getElementById('filter_options');
     const applyFiltersButton = document.getElementById('apply_filters');
@@ -37,11 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-    
+
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         const token = localStorage.getItem('token');
-    
+
         try {
             const response = await fetch('http://localhost:5000/leads', {
                 method: 'POST',
@@ -74,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             leads = await response.json();
-            console.log("Fetched data:", leads);
             displayLeads(leads);
         } catch (error) {
             console.error('Error:', error);
@@ -106,32 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
             'enrollment': document.getElementById('enrollment').querySelector('.leads'),
             'training progress': document.getElementById('training-progress').querySelector('.leads'),
             'hands on project': document.getElementById('hands-on-project').querySelector('.leads'),
-            'certificate completion': document.getElementById('certificate-completion').querySelector('.leads'),
+            'certification': document.getElementById('certificate-completion').querySelector('.leads'),
             'cv build': document.getElementById('cv-build').querySelector('.leads'),
             'mock interviews': document.getElementById('mock-interviews').querySelector('.leads'),
             'placement': document.getElementById('placement').querySelector('.leads')
         };
-    
+
         Object.values(sections).forEach(section => section.innerHTML = '');
-    
+
         const counts = {
             'enquiry': 0,
             'enrollment': 0,
             'training progress': 0,
             'hands on project': 0,
-            'certificate completion': 0,
+            'certification': 0,
             'cv build': 0,
             'mock interviews': 0,
             'placement': 0
         };
-    
+
         leads.forEach(lead => {
             const leadCard = document.createElement('div');
             leadCard.className = 'lead-card';
             leadCard.draggable = true;
             const timeDiff = getTimeDifference(lead.created_at);
-    
-            // Determine the background color for the paid status circle
+
             let paidStatusColor = '';
             let paidStatusText = '';
             if (lead.paid_status.toLowerCase() === 'not paid') {
@@ -141,15 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (lead.paid_status.toLowerCase() === 'paid') {
                 paidStatusColor = 'green';
             }
-            
-    
-            // Determine the class for the time span
+
             let timeSpanClass = timeDiff.isOverADay && lead.status.toLowerCase() === 'enquiry' ? 'bg-red' : 'bg-green';
-    
-            console.log('Lead:', lead);
-            console.log('Paid Status Color:', paidStatusColor);
-            console.log('Paid Status Text:', paidStatusText);
-    
+
             leadCard.innerHTML = `
                 <h4>${lead.name}</h4>
                 <p>Mobile: ${lead.mobile_number}</p>
@@ -158,25 +151,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="time ${timeSpanClass}">${timeDiff.text}</span>
                 <span class="paid-status-circle" style="background-color: ${paidStatusColor}; width: 20px; height: 20px; border-radius: 50%; display: inline-block; position: absolute; bottom: 10px; right: 10px; line-height: 20px;">${paidStatusText}</span>
             `;
-    
-            // Add event listeners for click and drag events
+
             leadCard.addEventListener('click', () => openModal(lead));
             leadCard.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', JSON.stringify(lead));
                 e.dataTransfer.effectAllowed = 'move';
             });
-    
+
             const normalizedStatus = lead.status.toLowerCase();
             if (sections[normalizedStatus]) {
                 sections[normalizedStatus].appendChild(leadCard);
                 counts[normalizedStatus]++;
             }
         });
-    
-        console.log('Counts:', counts);
+
         updateCounts(counts);
     }
-    
+
     function updateCounts(counts) {
         Object.keys(counts).forEach(status => {
             const section = document.getElementById(status.replace(' ', '-'));
@@ -210,16 +201,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong><i class="material-icons">comment</i> Comments:</strong> ${lead.comments}</p>
             <p><strong><i class="material-icons">info</i> Status:</strong> ${lead.status}</p>
             <p><strong><i class="material-icons">credit_card</i> Paid Status:</strong> ${lead.paid_status}</p>
+            ${lead.enrollment_id ? `<p><strong><i class="material-icons">assignment_ind</i> Enrollment ID:</strong> ${lead.enrollment_id}</p>` : ''}
         `;
         document.getElementById('editLeadForm').style.display = 'none';
         document.getElementById('modalDetails').style.display = 'block';
         $('#leadModal').modal('show');
     }
-    
+
     function closeModal() {
         $('#leadModal').modal('hide');
     }
-    
 
     async function editLead() {
         const formData = new FormData(editLeadForm);
@@ -235,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data)
             });
             const updatedLead = await response.json();
-    
+
             if (updatedLead.status !== currentLead.status) {
                 fetchLeads();
             } else {
@@ -247,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Failed to update lead.');
         }
     }
-    
+
     async function deleteLead(leadId) {
         const token = localStorage.getItem('token');
         try {
@@ -269,6 +260,30 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Failed to delete lead.');
         }
     }
+
+    async function archiveLead(leadId) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:5000/leads/archive/${leadId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.ok) {
+                alert('Lead archived successfully!');
+                fetchLeads(); // Refresh active leads list
+                closeModal();
+            } else {
+                alert('Failed to archive lead.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to archive lead.');
+        }
+    }
+
+    archiveLeadButton.onclick = () => archiveLead(currentLead.lead_id);
 
     editLeadButton.onclick = () => {
         populateEditForm(currentLead);
@@ -385,6 +400,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const filteredLeads = leads.filter(lead => lead.name.toLowerCase().includes(searchTerm));
         displayLeads(filteredLeads);
     });
+
+    // Fetch archived leads button event listener
+    document.getElementById('fetchArchivedLeadsBtn').addEventListener('click', fetchArchivedLeads);
+
+    async function fetchArchivedLeads() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('http://localhost:5000/leads/archived', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const archivedLeads = await response.json();
+            displayArchivedLeads(archivedLeads);
+        } catch (error) {
+            console.error('Error fetching archived leads:', error);
+        }
+    }
+
+    function displayArchivedLeads(leads) {
+        const archivedSection = document.getElementById('archived-leads');
+        archivedSection.innerHTML = '';
+
+        leads.forEach(lead => {
+            const leadCard = document.createElement('div');
+            leadCard.className = 'lead-card';
+            leadCard.innerHTML = `
+                <h4>${lead.name}</h4>
+                <p>Mobile: ${lead.mobile_number}</p>
+                <p>Course: ${lead.course}</p>
+                <p>Batch: ${lead.batch_name}</p>
+                <p>Status: ${lead.status}</p>
+                <button class="btn btn-primary btn-sm restore-btn" data-lead-id="${lead.lead_id}">Restore</button>
+            `;
+
+            leadCard.querySelector('.restore-btn').addEventListener('click', () => restoreLead(lead.lead_id));
+            archivedSection.appendChild(leadCard);
+        });
+    }
+
+    async function restoreLead(leadId) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:5000/leads/restore/${leadId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: 'Enquiry' }) // or any other status you want to restore to
+            });
+            if (response.ok) {
+                alert('Lead restored successfully!');
+                fetchArchivedLeads(); // Refresh archived leads list
+                fetchLeads(); // Refresh active leads list
+            } else {
+                alert('Failed to restore lead.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to restore lead.');
+        }
+    }
 
     fetchFilterOptions();
     fetchLeads();

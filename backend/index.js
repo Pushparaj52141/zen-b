@@ -4,6 +4,9 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
+const cron = require('node-cron');
+const nodemailer = require('nodemailer');
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,6 +33,11 @@ function authenticateToken(req, res, next) {
         req.user = user;
         next();
     });
+}
+
+// Function to generate a unique enrollment ID
+function generateEnrollmentID() {
+    return 'ENR' + Date.now().toString(36).toUpperCase();
 }
 
 // Login route
@@ -63,10 +71,10 @@ app.post('/addTrainer', authenticateToken, async (req, res) => {
     }
 });
 
-// Protected route example
+// Fetch all leads except archived
 app.get('/leads', authenticateToken, async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM leads');
+        const result = await pool.query('SELECT * FROM leads WHERE status != $1', ['Archived']);
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -74,10 +82,16 @@ app.get('/leads', authenticateToken, async (req, res) => {
     }
 });
 
-// Function to generate a unique enrollment ID
-function generateEnrollmentID() {
-    return 'ENR' + Date.now().toString(36).toUpperCase();
-}
+// Fetch archived leads
+app.get('/leads/archived', authenticateToken, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM leads WHERE status = $1', ['Archived']);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Failed to fetch archived leads' });
+    }
+});
 
 // Get leads for trainers
 app.get('/trainer/leads', authenticateToken, async (req, res) => {
@@ -136,7 +150,7 @@ app.put('/leads/:id', authenticateToken, async (req, res) => {
         const currentLead = currentLeadResult.rows[0];
 
         // Generate enrollment_id if status is changing from 'Enquiry' to 'Enrollment'
-        if (currentLead.status === 'Enquiry' && status === 'Enrollment') {
+        if (currentLead.status === 'enquiry' && status === 'enrollment') {
             enrollment_id = generateEnrollmentID();
         }
 
@@ -183,6 +197,32 @@ app.delete('/leads/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Archive a lead by ID
+app.put('/leads/archive/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query('UPDATE leads SET status = $1 WHERE lead_id = $2 RETURNING *', ['Archived', id]);
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Failed to archive lead' });
+    }
+});
+
+// Restore a lead by ID
+app.put('/leads/restore/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+        const result = await pool.query('UPDATE leads SET status = $1 WHERE lead_id = $2 RETURNING *', [status, id]);
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Failed to restore lead' });
+    }
+});
+
+// Get distinct courses for filters
 app.get('/courses', async (req, res) => {
     try {
         const result = await pool.query('SELECT DISTINCT course FROM leads');
@@ -193,6 +233,7 @@ app.get('/courses', async (req, res) => {
     }
 });
 
+// Get distinct statuses for filters
 app.get('/statuses', async (req, res) => {
     try {
         const result = await pool.query('SELECT DISTINCT status FROM leads');
@@ -200,6 +241,43 @@ app.get('/statuses', async (req, res) => {
     } catch (error) {
         console.error('Error fetching statuses:', error);
         res.status(500).send('Server error');
+    }
+});
+
+
+// Set up nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'pushparajraje52141@gmail.com',
+        pass: 'qekwexivgbadufzc'
+    }
+});
+
+// Scheduled job to send reminders for leads in 'Enquiry' status for more than 7 days
+cron.schedule('0 0 * * *', async () => {
+    try {
+        const result = await pool.query('SELECT * FROM leads WHERE status = $1 AND created_at < NOW() - INTERVAL \'7 days\'', ['Enquiry']);
+        const leads = result.rows;
+
+        leads.forEach(lead => {
+            const mailOptions = {
+                from: 'pushparajraje52141@gmail.com',
+                to: lead.email,
+                subject: 'Follow-up on Your Enquiry',
+                text: `Hi ${lead.name},\n\nWe noticed that you haven't enrolled in any course yet. Please let us know if you need any assistance.\n\nBest regards,\nYour Team`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                } else {
+                    console.log('Email sent:', info.response);
+                }
+            });
+        });
+    } catch (err) {
+        console.error('Error fetching leads for reminder:', err);
     }
 });
 

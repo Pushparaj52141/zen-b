@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="/frontend/admin/style.css">
     <link rel="stylesheet" href="/frontend/assets/dist/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
       body {
         font-family: 'Poppins', sans-serif;
@@ -18,11 +17,6 @@
     </style>
 </head>
 <body>
-    <!-- Preloader -->
-    <div class="preloader-it">
-        <div class="la-anim-1"></div>
-    </div>
-    <!-- /Preloader -->
     <div class="wrapper theme-1-active pimary-color-red">
         <!-- Top Menu Items -->
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -53,7 +47,6 @@
                         <a id="toggle_filter" href="javascript:void(0);" style="font-size: 1.5em; font-weight: bold;">
                             <i class="fa fa-filter"></i>
                         </a>
-                        
                     </li>
                     <li>
                         <a id="open_right_sidebar" href="#"><i class="zmdi zmdi-settings top-nav-icon"></i></a>
@@ -181,7 +174,6 @@
                 </ul>
             </div>
         </nav>
-        
 
         <!-- Filter options container -->
         <div id="filter_options" class="filter-options" style="display:none;">
@@ -201,8 +193,6 @@
             </div>
             <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
         </div>
-
-        <!-- /Top Menu Items -->
 
         <!-- Left Sidebar Menu -->
         <div class="fixed-sidebar-left">
@@ -229,7 +219,6 @@
                         <div class="clearfix"></div>
                     </a>
                 </li>
-
                 <li>
                     <a href="enquiry.html">
                         <div class="pull-left">
@@ -304,206 +293,173 @@
                 </li>
             </ul>
         </div>
-        <!-- /Left Sidebar Menu -->
 
         <div class="page-wrapper">
             <div class="container-fluid">
-
                 <button class="addlead btn btn-danger" data-toggle="modal" data-target="#leadFormModal">+ Add Lead</button>
 
-                <button class="addtrainer btn btn-primary mt-3" id="addTrainerBtn" data-toggle="modal" data-target="#addTrainerModal">+ Add Trainer</button>
-
-                <!-- Add Trainer Modal -->
-                <div class="modal fade" id="addTrainerModal" tabindex="-1" aria-labelledby="addTrainerModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                <!-- Add Lead Modal -->
+                <div class="modal fade" id="leadFormModal" tabindex="-1" role="dialog" aria-labelledby="leadFormModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addTrainerModalLabel">Add Trainer</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="addTrainerForm">
-                                    <div class="form-group">
-                                        <label for="username">Trainer Username</label>
-                                        <input type="text" id="username" name="username" class="form-control" required>
+                            <div class="modal-body lead-form" id="leadFormContainer">
+                                <form class="form-horizontal form-material" id="leadForm">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="modal-header">
+                                        <h5 id="leadFormModalLabel">Lead Form</h5>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="password" id="password" name="password" class="form-control" required>
+                                    <div class="form-step form-step-active">
+                                        <div class="card-header">Basic Information</div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="name" placeholder="Name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="mobile_number" placeholder="Mobile Number" required pattern="[0-9]{10}">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" name="email" placeholder="Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="role" id="roleDropdown">
+                                                <option value="" selected disabled>Select Role</option>
+                                                <option value="Students">Student</option>
+                                                <option value="Professionals">Professional</option>
+                                                <option value="Employees">Employees</option>
+                                                <option value="Entrepreneurs">Entrepreneur</option>
+                                                <option value="Hobbyists">Hobbyist</option>
+                                                <option value="Retirees">Retiree</option>
+                                                <option value="Freelancers">Freelancer</option>
+                                                <option value="Parents">Parent</option>
+                                                <option value="Educators">Educator</option>
+                                                <option value="Job Seekers">Job Seeker</option>
+                                                <option value="IT Professionals">IT Professional</option>
+                                                <option value="Software Developers">Software Developer</option>
+                                                <option value="Data Analysts">Data Analyst</option>
+                                                <option value="Data Scientists">Data Scientist</option>
+                                                <option value="Project Managers">Project Manager</option>
+                                                <option value="UX/UI Designers">UX/UI Designer</option>
+                                                <option value="Business Analysts">Business Analyst</option>
+                                                <option value="Digital Marketers">Digital Marketer</option>
+                                                <option value="Web Developers">Web Developer</option>
+                                                <option value="Cybersecurity Professionals">Cybersecurity Professional</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="college_company" placeholder="College/Company">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="location" placeholder="Location">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="source" id="sourceDropdown" required>
+                                                <option value="" selected disabled>Select Source</option>
+                                                <option value="Referral">Referral</option>
+                                                <option value="Advertisement">Advertisement</option>
+                                                <option value="Social Media">Social Media</option>
+                                                <option value="Website">Website</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-primary btn-next">Next</button>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Add Trainer</button>
+                                    <div class="form-step">
+                                        <div class="card-header">Course Information</div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="course_type" id="courseTypeDropdown" required>
+                                                <option value="" selected disabled>Select Course Type</option>
+                                                <option value="Programming Languages">Programming Languages</option>
+                                                <option value="Database">Database</option>
+                                                <option value="Data Analytics">Data Analytics</option>
+                                                <option value="Data Science">Data Science</option>
+                                                <option value="Data Visualization">Data Visualization</option>
+                                                <option value="Cloud and DevOps">Cloud and DevOps</option>
+                                                <option value="Digital Marketing">Digital Marketing</option>
+                                                <option value="Proficiency Exams">Proficiency Exams</option>
+                                                <option value="Languages">Languages</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="course" id="courseDropdown" required>
+                                                <option value="" selected disabled>Select Course</option>
+                                                <option value="MS SQL">MS SQL</option>
+                                                <option value="Power BI">Power BI</option>
+                                                <option value="Tableau">Tableau</option>
+                                                <option value="Azure">Azure</option>
+                                                <option value="SAS">SAS</option>
+                                                <option value="Core Python">Core Python</option>
+                                                <option value="Core Java">Core Java</option>
+                                                <option value="IELTS">IELTS</option>
+                                                <option value="TOEFL">TOEFL</option>
+                                                <option value="PTE">PTE</option>
+                                                <option value="French">French</option>
+                                                <option value="German">German</option>
+                                                <option value="Data Science">Data Science</option>
+                                                <option value="Digital Marketing">Digital Marketing</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="batch_name" placeholder="Batch Name" >
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="trainer_name" placeholder="Trainer Name">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="trainer_mobile" placeholder="Trainer Mobile" pattern="[0-9]{10}">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" name="trainer_email" placeholder="Trainer Email">
+                                        </div>
+                                        <button type="button" class="btn btn-secondary btn-prev">Previous</button>
+                                        <button type="button" class="btn btn-primary btn-next">Next</button>
+                                    </div>
+                                    <div class="form-step">
+                                        <div class="card-header">Payment Information</div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="actual_fee" placeholder="Actual Fee"  min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="discounted_fee" placeholder="Discounted Fee" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="fee_paid" placeholder="Fee Paid" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="fee_balance" placeholder="Fee Balance" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="paid_status">Paid Status:</label>
+                                            <select id="paid_status" name="paid_status" class="form-control" required>
+                                                <option value="not paid">Not Paid</option>
+                                                <option value="partially paid">Partially Paid</option>
+                                                <option value="paid">Paid</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select name="status" class="form-control" required>
+                                                <option value="enquiry">Enquiry</option>
+                                                <option value="enrollment">Enrollment</option>
+                                                <option value="training Progress">Training Progress</option>
+                                                <option value="hands on Project">Hands on Project</option>
+                                                <option value="certification">Certificate Completion</option>
+                                                <option value="cv build">CV Build</option>
+                                                <option value="mock interview">Mock Interviews</option>
+                                                <option value="placement">Placement</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea name="comments" class="form-control" placeholder="Comments"></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary btn-prev">Previous</button>
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
                                 </form>
-                                <div id="adminMessage" class="mt-3"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-<!-- Add Lead Modal -->
-<div class="modal fade" id="leadFormModal" tabindex="-1" role="dialog" aria-labelledby="leadFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-body lead-form" id="leadFormContainer">
-                <form class="form-horizontal form-material" id="leadForm">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="modal-header">
-                        <h5 id="leadFormModalLabel">Lead Form</h5>
-                    </div>
-                    <div class="form-step form-step-active">
-                        <div class="card-header">Basic Information</div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="name" placeholder="Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="mobile_number" placeholder="Mobile Number" required pattern="[0-9]{10}">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" name="email" placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="role" id="roleDropdown">
-                                <option value="" selected disabled>Select Role</option>
-                                <option value="Students">Student</option>
-                                <option value="Professionals">Professional</option>
-                                <option value="Employees">Employees</option>
-                                <option value="Entrepreneurs">Entrepreneur</option>
-                                <option value="Hobbyists">Hobbyist</option>
-                                <option value="Retirees">Retiree</option>
-                                <option value="Freelancers">Freelancer</option>
-                                <option value="Parents">Parent</option>
-                                <option value="Educators">Educator</option>
-                                <option value="Job Seekers">Job Seeker</option>
-                                <option value="IT Professionals">IT Professional</option>
-                                <option value="Software Developers">Software Developer</option>
-                                <option value="Data Analysts">Data Analyst</option>
-                                <option value="Data Scientists">Data Scientist</option>
-                                <option value="Project Managers">Project Manager</option>
-                                <option value="UX/UI Designers">UX/UI Designer</option>
-                                <option value="Business Analysts">Business Analyst</option>
-                                <option value="Digital Marketers">Digital Marketer</option>
-                                <option value="Web Developers">Web Developer</option>
-                                <option value="Cybersecurity Professionals">Cybersecurity Professional</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="college_company" placeholder="College/Company">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="location" placeholder="Location">
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="source" id="sourceDropdown" required>
-                                <option value="" selected disabled>Select Source</option>
-                                <option value="Referral">Referral</option>
-                                <option value="Advertisement">Advertisement</option>
-                                <option value="Social Media">Social Media</option>
-                                <option value="Website">Website</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-primary btn-next">Next</button>
-                    </div>
-                    <div class="form-step">
-                        <div class="card-header">Course Information</div>
-                        <div class="form-group">
-                            <select class="form-control" name="course_type" id="courseTypeDropdown" required>
-                                <option value="" selected disabled>Select Course Type</option>
-                                <option value="Programming Languages">Programming Languages</option>
-                                <option value="Database">Database</option>
-                                <option value="Data Analytics">Data Analytics</option>
-                                <option value="Data Science">Data Science</option>
-                                <option value="Data Visualization">Data Visualization</option>
-                                <option value="Cloud and DevOps">Cloud and DevOps</option>
-                                <option value="Digital Marketing">Digital Marketing</option>
-                                <option value="Proficiency Exams">Proficiency Exams</option>
-                                <option value="Languages">Languages</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="course" id="courseDropdown" required>
-                                <option value="" selected disabled>Select Course</option>
-                                <option value="MS SQL">MS SQL</option>
-                                <option value="Power BI">Power BI</option>
-                                <option value="Tableau">Tableau</option>
-                                <option value="Azure">Azure</option>
-                                <option value="SAS">SAS</option>
-                                <option value="Core Python">Core Python</option>
-                                <option value="Core Java">Core Java</option>
-                                <option value="IELTS">IELTS</option>
-                                <option value="TOEFL">TOEFL</option>
-                                <option value="PTE">PTE</option>
-                                <option value="French">French</option>
-                                <option value="German">German</option>
-                                <option value="Data Science">Data Science</option>
-                                <option value="Digital Marketing">Digital Marketing</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="batch_name" placeholder="Batch Name" >
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="trainer_name" placeholder="Trainer Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="trainer_mobile" placeholder="Trainer Mobile" pattern="[0-9]{10}">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" name="trainer_email" placeholder="Trainer Email">
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-prev">Previous</button>
-                        <button type="button" class="btn btn-primary btn-next">Next</button>
-                    </div>
-                    <div class="form-step">
-                        <div class="card-header">Payment Information</div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" name="actual_fee" placeholder="Actual Fee"  min="0">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" name="discounted_fee" placeholder="Discounted Fee" min="0">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" name="fee_paid" placeholder="Fee Paid" min="0">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" name="fee_balance" placeholder="Fee Balance" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="paid_status">Paid Status:</label>
-                            <select id="paid_status" name="paid_status" class="form-control" required>
-                                <option value="not paid">Not Paid</option>
-                                <option value="partially paid">Partially Paid</option>
-                                <option value="paid">Paid</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select name="status" class="form-control" required>
-                                <option value="Enquiry">Enquiry</option>
-                                <option value="Enrollment">Enrollment</option>
-                                <option value="Training Progress">Training Progress</option>
-                                <option value="Hands on Project">Hands on Project</option>
-                                <option value="Certificate Completion">Certificate Completion</option>
-                                <option value="CV Build">CV Build</option>
-                                <option value="Mock Interview">Mock Interviews</option>
-                                <option value="Placement">Placement</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="comments" class="form-control" placeholder="Comments"></textarea>
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-prev">Previous</button>
-                        <button type="submit" class="btn btn-success">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 
                 <div class="leads-container leads-section">
                     <div class="status-section" id="enquiry" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -539,9 +495,6 @@
                         <div class="leads"></div>
                     </div>
                 </div>
-                
-                
-                
 
                 <!-- Lead Modal -->
                 <div id="leadModal" class="modal fade" tabindex="-1" role="dialog">
@@ -587,17 +540,22 @@
                                     <input type="number" name="actual_fee" placeholder="Actual Fee" required class="form-control mb-3">
                                     <input type="number" name="discounted_fee" placeholder="Discounted Fee" required class="form-control mb-3">
                                     <input type="number" name="fee_paid" placeholder="Fee Paid" required class="form-control mb-3">
+                                    <select id="paid_status" name="paid_status" class="form-control" required>
+                                        <option value="not paid">Not Paid</option>
+                                        <option value="partially paid">Partially Paid</option>
+                                        <option value="paid">Paid</option>
+                                    </select>
                                     <input type="number" name="fee_balance" placeholder="Fee Balance" required class="form-control mb-3">
                                     <textarea name="comments" placeholder="Comments" class="form-control mb-3"></textarea>
-                                    <select name="status" required class="form-control mb-3">
-                                        <option value="Enquiry">Enquiry</option>
-                                        <option value="Enrollment">Enrollment</option>
-                                        <option value="Training Progress">Training Progress</option>
-                                        <option value="Hands on Project">Hands on Project</option>
-                                        <option value="Certificate Completion">Certificate Completion</option>
-                                        <option value="CV Build">CV Build</option>
-                                        <option value="Mock Interview">Mock Interviews</option>
-                                        <option value="Placement">Placement</option>
+                                    <select id ="status" name="status" required class="form-control mb-3">
+                                        <option value="enquiry">Enquiry</option>
+                                        <option value="enrollment">Enrollment</option>
+                                        <option value="training progress">Training Progress</option>
+                                        <option value="hands on project">Hands on Project</option>
+                                        <option value="certificate completion">Certificate Completion</option>
+                                        <option value="cv build">CV Build</option>
+                                        <option value="mock interview">Mock Interviews</option>
+                                        <option value="placement">Placement</option>
                                     </select>
                                     <button type="button" class="btn btn-secondary btn-prev float-left">Previous</button>
                                     <button type="submit" class="btn btn-success float-right">Save Changes</button>
@@ -606,11 +564,18 @@
                             <div class="modal-footer d-flex justify-content-between">
                                 <button id="editLeadButton" class="btn btn-warning">Edit</button>
                                 <button id="deleteLeadButton" class="btn btn-danger">Delete</button>
+                                <button id="archiveLeadButton" class="btn btn-secondary">Archive</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Archived Leads Section -->
+                <div id="archived-leads-container">
+                    <h2>Archived Leads</h2>
+                    <div id="archived-leads"></div>
+                    <button id="fetchArchivedLeadsBtn" class="btn btn-secondary">Fetch Archived Leads</button>
+                </div>
             </div>
         </div>
     </div>
@@ -626,8 +591,6 @@
     <script src="/frontend/assets/dist/js/dropdown-bootstrap-extended.js"></script>
     <!-- Init JavaScript -->
     <script src="/frontend/assets/dist/js/init.js"></script>
-  
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
