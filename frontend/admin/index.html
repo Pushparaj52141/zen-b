@@ -175,24 +175,44 @@
             </div>
         </nav>
 
-        <!-- Filter options container -->
-        <div id="filter_options" class="filter-options" style="display:none;">
-            <div class="filter-option">
-                <label for="filter_course">Course:</label>
-                <select id="filter_course">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <div class="filter-option">
-                <label for="filter_status">Status:</label>
-                <select id="filter_status">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
-        </div>
+  
+
+<!-- Filter options container -->
+<div id="filter_options" class="filter-options" style="display:none;">
+    <div class="filter-option">
+        <label for="filter_course">Course:</label>
+        <select id="filter_course">
+            <option value="">All</option>
+            <!-- Dynamic course options will be populated here -->
+        </select>
+    </div>
+    <div class="filter-option">
+        <label for="filter_status">Status:</label>
+        <select id="filter_status">
+            <option value="">All</option>
+            <option value="enquiry">Enquiry</option>
+            <option value="enrollment">Enrollment</option>
+            <option value="training progress">Training Progress</option>
+            <option value="hands on project">Hands on Project</option>
+            <option value="certification">Certification</option>
+            <option value="cv build">CV Build</option>
+            <option value="mock interviews">Mock Interviews</option>
+            <option value="placement">Placement</option>
+        </select>
+    </div>
+    <div class="filter-option">
+        <label for="filter_time_period">Time Period:</label>
+        <select id="filter_time_period">
+            <option value="">All Time</option>
+            <option value="last24hours">Last 24 Hours</option>
+            <option value="last7days">Last 7 Days</option>
+            <option value="last30days">Last 30 Days</option>
+        </select>
+    </div>
+    <button id="apply_filters" class="btn btn-primary">Apply Filters</button>
+</div>
+
+
 
         <!-- Left Sidebar Menu -->
         <div class="fixed-sidebar-left">
@@ -445,7 +465,7 @@
                                                 <option value="hands on Project">Hands on Project</option>
                                                 <option value="certification">Certificate Completion</option>
                                                 <option value="cv build">CV Build</option>
-                                                <option value="mock interview">Mock Interviews</option>
+                                                <option value="interview">Mock Interviews</option>
                                                 <option value="placement">Placement</option>
                                             </select>
                                         </div>
@@ -462,40 +482,40 @@
                 </div>
 
                 <div class="leads-container leads-section">
-                    <div class="status-section" id="enquiry" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="enquiry" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-red">Enquiry</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="enrollment" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="enrollment" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-yellow">Enrollment</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="training-progress" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="training-progress" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-green">Training Progress</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="hands-on-project" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="hands-on-project" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-blue">Hands on Project</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="certificate-completion" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="certification" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-pink">Certification</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="cv-build" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="cv-build" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-grape">CV Build</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="mock-interviews" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="status-section" id="mock-interviews" ondragover="allowDrop(event)" ondrop="drop(event)">
                         <h2 class="phase bg-sky">Mock Interviews</h2>
                         <div class="leads"></div>
                     </div>
-                    <div class="status-section" id="placement" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h2 class="phase bg-egg">Placement<span class="card-count"></span></h2>
+                    <div class="status-section" id="placement" ondragover="allowDrop(event)" ondrop="drop(event)">
+                        <h2 class="phase bg-egg">Placement</h2>
                         <div class="leads"></div>
                     </div>
                 </div>
-
+                
                 <!-- Lead Modal -->
                 <div id="leadModal" class="modal fade" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-xl" role="document">
@@ -552,7 +572,7 @@
                                         <option value="enrollment">Enrollment</option>
                                         <option value="training progress">Training Progress</option>
                                         <option value="hands on project">Hands on Project</option>
-                                        <option value="certificate completion">Certificate Completion</option>
+                                        <option value="certification">Certification</option>
                                         <option value="cv build">CV Build</option>
                                         <option value="mock interview">Mock Interviews</option>
                                         <option value="placement">Placement</option>

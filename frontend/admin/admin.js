@@ -17,8 +17,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTrainerForm = document.getElementById('addTrainerForm');
     let currentStep = 0;
     let currentLead = null;
-
     let leads = [];
+
+    const statusSections = document.querySelectorAll('.status-section');
+
+    // Function to initialize card counts
+    const initializeCardCounts = () => {
+        statusSections.forEach(section => {
+            const heading = section.querySelector('h2');
+            if (heading) {
+                const countSpan = document.createElement('span');
+                countSpan.classList.add('card-count');
+                countSpan.textContent = ' (0)';
+                heading.appendChild(countSpan);
+                updateCardCount(section);
+            }
+        });
+    };
+
+    // Function to update the count of cards in a section
+    const updateCardCount = (section) => {
+        const cards = section.querySelectorAll('.lead-card');
+        const countSpan = section.querySelector('.card-count');
+        if (countSpan) {
+            countSpan.textContent = ` (${cards.length})`;
+        }
+    };
+
+    initializeCardCounts();
 
     nextBtn.forEach(button => {
         button.addEventListener('click', () => {
@@ -53,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data)
             });
             const result = await response.json();
+            console.log('Lead added successfully:', result);
             alert('Lead added successfully!');
             form.reset();
             steps[currentStep].classList.remove('form-step-active');
@@ -67,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function fetchLeads() {
+        console.log('Fetching leads...');
         const token = localStorage.getItem('token');
         try {
             const response = await fetch('http://localhost:5000/leads', {
@@ -75,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             leads = await response.json();
+            console.log('Leads fetched successfully:', leads);
             displayLeads(leads);
         } catch (error) {
             console.error('Error:', error);
@@ -101,12 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayLeads(leads) {
+        console.log('Displaying leads...');
         const sections = {
             'enquiry': document.getElementById('enquiry').querySelector('.leads'),
             'enrollment': document.getElementById('enrollment').querySelector('.leads'),
             'training progress': document.getElementById('training-progress').querySelector('.leads'),
             'hands on project': document.getElementById('hands-on-project').querySelector('.leads'),
-            'certification': document.getElementById('certificate-completion').querySelector('.leads'),
+            'certification': document.getElementById('certification').querySelector('.leads'),
             'cv build': document.getElementById('cv-build').querySelector('.leads'),
             'mock interviews': document.getElementById('mock-interviews').querySelector('.leads'),
             'placement': document.getElementById('placement').querySelector('.leads')
@@ -114,16 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         Object.values(sections).forEach(section => section.innerHTML = '');
 
-        const counts = {
-            'enquiry': 0,
-            'enrollment': 0,
-            'training progress': 0,
-            'hands on project': 0,
-            'certification': 0,
-            'cv build': 0,
-            'mock interviews': 0,
-            'placement': 0
-        };
+        // Populate course options dynamically
+        const courseSet = new Set();
+        leads.forEach(lead => courseSet.add(lead.course));
+        const courseSelect = document.getElementById('filter_course');
+        courseSelect.innerHTML = '<option value="">All</option>'; // Clear existing options
+        courseSet.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course;
+            option.textContent = course;
+            courseSelect.appendChild(option);
+        });
 
         leads.forEach(lead => {
             const leadCard = document.createElement('div');
@@ -156,26 +187,18 @@ document.addEventListener('DOMContentLoaded', () => {
             leadCard.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', JSON.stringify(lead));
                 e.dataTransfer.effectAllowed = 'move';
+                console.log("Drag start:", lead);
             });
 
             const normalizedStatus = lead.status.toLowerCase();
             if (sections[normalizedStatus]) {
                 sections[normalizedStatus].appendChild(leadCard);
-                counts[normalizedStatus]++;
+                updateCardCount(sections[normalizedStatus].parentElement); // Update the count for the section
             }
         });
 
-        updateCounts(counts);
-    }
-
-    function updateCounts(counts) {
-        Object.keys(counts).forEach(status => {
-            const section = document.getElementById(status.replace(' ', '-'));
-            const countElement = section.querySelector('.card-count');
-            if (countElement) {
-                countElement.textContent = ` (${counts[status]})`;
-            }
-        });
+        // Update counts for all sections after adding leads
+        statusSections.forEach(section => updateCardCount(section));
     }
 
     function openModal(lead) {
@@ -307,8 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const statusSections = document.querySelectorAll('.status-section');
-
     statusSections.forEach(section => {
         section.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -318,7 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
         section.addEventListener('drop', async (e) => {
             e.preventDefault();
             const leadData = JSON.parse(e.dataTransfer.getData('text/plain'));
-            const newStatus = section.querySelector('h2').innerText.toLowerCase();
+            console.log("Drop event:", leadData);
+            const newStatusElement = e.target.closest('.status-section');
+            if (!newStatusElement) return;
+            const newStatus = newStatusElement.id.replace(/-/g, ' ');
 
             if (leadData.status.toLowerCase() !== newStatus) {
                 leadData.status = newStatus;
@@ -330,44 +354,53 @@ document.addEventListener('DOMContentLoaded', () => {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify(leadData)
+                        body: JSON.stringify(leadData) // Send the entire lead object
                     });
                     const result = await response.json();
-                    fetchLeads();
+                    console.log("Lead status updated successfully:", result);
+                    if (result.error) {
+                        console.error('Failed to update lead:', result.error);
+                        alert('Failed to update lead status.');
+                    } else {
+                        await fetchLeads(); // Re-fetch leads to update the UI
+                    }
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Error updating lead status:', error);
                     alert('Failed to update lead status.');
                 }
             }
         });
     });
 
-    async function fetchFilterOptions() {
-        try {
-            const [coursesResponse, statusesResponse] = await Promise.all([
-                fetch('http://localhost:5000/courses'),
-                fetch('http://localhost:5000/statuses')
-            ]);
+    function applyFilters() {
+        const courseFilter = document.getElementById('filter_course').value;
+        const statusFilter = document.getElementById('filter_status').value;
+        const timePeriodFilter = document.getElementById('filter_time_period').value;
 
-            const courses = await coursesResponse.json();
-            const statuses = await statusesResponse.json();
+        const filteredLeads = leads.filter(lead => {
+            const matchesCourse = courseFilter === '' || lead.course === courseFilter;
+            const matchesStatus = statusFilter === '' || lead.status === statusFilter;
+            const matchesTimePeriod = timePeriodFilter === '' || withinTimePeriod(lead.created_at, timePeriodFilter);
 
-            populateFilterOptions('filter_course', courses, 'course');
-            populateFilterOptions('filter_status', statuses, 'status');
-        } catch (error) {
-            console.error('Error fetching filter options:', error);
-        }
+            return matchesCourse && matchesStatus && matchesTimePeriod;
+        });
+
+        displayLeads(filteredLeads);
     }
 
-    function populateFilterOptions(elementId, options, key) {
-        const selectElement = document.getElementById(elementId);
-        selectElement.innerHTML = '<option value="">All</option>';
-        options.forEach(option => {
-            const opt = document.createElement('option');
-            opt.value = option[key];
-            opt.textContent = option[key];
-            selectElement.appendChild(opt);
-        });
+    function withinTimePeriod(leadTime, timePeriod) {
+        const now = new Date();
+        const leadDate = new Date(leadTime);
+        const differenceInMs = now - leadDate;
+
+        if (timePeriod === 'last24hours') {
+            return differenceInMs <= 86400000;
+        } else if (timePeriod === 'last7days') {
+            return differenceInMs <= 604800000;
+        } else if (timePeriod === 'last30days') {
+            return differenceInMs <= 2592000000;
+        }
+        return true;
     }
 
     filterIcon.addEventListener('click', () => {
@@ -375,18 +408,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     applyFiltersButton.addEventListener('click', applyFilters);
-
-    function applyFilters() {
-        const courseFilter = document.getElementById('filter_course').value;
-        const statusFilter = document.getElementById('filter_status').value;
-
-        const filteredLeads = leads.filter(lead => {
-            return (courseFilter === '' || lead.course === courseFilter) && 
-                   (statusFilter === '' || lead.status === statusFilter);
-        });
-
-        displayLeads(filteredLeads);
-    }
 
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
@@ -464,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    fetchFilterOptions();
+    // Fetch leads on page load
     fetchLeads();
 
     // Add Trainer Form Submission
@@ -500,3 +521,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+async function drop(event) {
+    event.preventDefault();
+    const leadData = JSON.parse(event.dataTransfer.getData('text/plain'));
+    console.log("Drop event:", leadData);
+    const newStatusElement = event.target.closest('.status-section');
+    if (!newStatusElement) return;
+    const newStatus = newStatusElement.id.replace(/-/g, ' ');
+
+    if (leadData.status.toLowerCase() !== newStatus) {
+        leadData.status = newStatus;
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`http://localhost:5000/leads/${leadData.lead_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(leadData) // Send the entire lead object
+            });
+            const result = await response.json();
+            console.log("Lead status updated successfully:", result);
+            if (result.error) {
+                console.error('Failed to update lead:', result.error);
+                alert('Failed to update lead status.');
+            } else {
+                await fetchLeads(); // Re-fetch leads to update the UI
+            }
+        } catch (error) {
+            console.error('Error updating lead status:', error);
+           
+        }
+    }
+}

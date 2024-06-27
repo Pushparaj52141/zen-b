@@ -6,7 +6,12 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
-
+const csv = require('csv-parser');
+const multer = require('multer');
+const fs = require('fs');
+const format = require('pg-format');
+const twilio = require('twilio');
+const { createObjectCsvWriter } = require('csv-writer');
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,6 +39,23 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
+
+const accountSid = 'AC2b0253bb2becc815092242c95ff25665'; // Your Account SID from www.twilio.com/console
+const authToken = '1619a2c4e6f3928de600819ca30e1666';   // Your Auth Token from www.twilio.com/console
+
+const client = new twilio(accountSid, authToken);
+
+client.messages.create({
+    body: 'Hello from Zen',
+    to: '+919003177131',  // Text this number
+    from: '+16467831665' // From a valid Twilio number
+})
+.then((message) => console.log(message.sid))
+.catch((error) => console.error(error));
+
+// Multer setup for file upload
+const upload = multer({ dest: 'uploads/' });
 
 // Function to generate a unique enrollment ID
 function generateEnrollmentID() {
@@ -136,6 +158,103 @@ app.post('/leads', authenticateToken, async (req, res) => {
         console.error(err.message);
         res.status(500).json({ error: 'Failed to add lead' });
     }
+});
+
+// Export leads to CSV
+app.get('/exportLeads', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM leads');
+        const leads = result.rows;
+
+        const csvWriter = createObjectCsvWriter({
+            path: 'leads.csv',
+            header: [
+                { id: 'lead_id', title: 'Lead ID' },
+                { id: 'name', title: 'Name' },
+                { id: 'mobile_number', title: 'Mobile Number' },
+                { id: 'email', title: 'Email' },
+                { id: 'role', title: 'Role' },
+                { id: 'college_company', title: 'College/Company' },
+                { id: 'location', title: 'Location' },
+                { id: 'source', title: 'Source' },
+                { id: 'course_type', title: 'Course Type' },
+                { id: 'course', title: 'Course' },
+                { id: 'batch_name', title: 'Batch Name' },
+                { id: 'trainer_name', title: 'Trainer Name' },
+                { id: 'trainer_mobile', title: 'Trainer Mobile' },
+                { id: 'trainer_email', title: 'Trainer Email' },
+                { id: 'actual_fee', title: 'Actual Fee' },
+                { id: 'discounted_fee', title: 'Discounted Fee' },
+                { id: 'fee_paid', title: 'Fee Paid' },
+                { id: 'fee_balance', title: 'Fee Balance' },
+                { id: 'comments', title: 'Comments' },
+                { id: 'status', title: 'Status' },
+                { id: 'paid_status', title: 'Paid Status' }
+            ]
+        });
+
+        await csvWriter.writeRecords(leads);
+        res.download(path.join(__dirname, 'leads.csv'), 'leads.csv', (err) => {
+            if (err) {
+                res.status(500).send('Error downloading the file.');
+            }
+            fs.unlinkSync(path.join(__dirname, 'leads.csv')); // Delete file after download
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Failed to export leads' });
+    }
+});
+
+
+
+
+// Bulk upload leads from CSV
+app.post('/leads/bulk-upload', authenticateToken, upload.single('file'), (req, res) => {
+    const filePath = req.file.path;
+
+    const leads = [];
+
+    fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (row) => {
+            leads.push([
+                row.name,
+                row.mobile_number,
+                row.email,
+                row.role,
+                row.college_company,
+                row.location,
+                row.source,
+                row.course_type,
+                row.course,
+                row.batch_name,
+                row.trainer_name,
+                row.trainer_mobile,
+                row.trainer_email,
+                row.actual_fee,
+                row.discounted_fee,
+                row.fee_paid,
+                row.fee_balance,
+                row.comments,
+                row.status,
+                row.paid_status
+            ]);
+        })
+        .on('end', async () => {
+            try {
+                const result = await pool.query(format(
+                    'INSERT INTO leads (name, mobile_number, email, role, college_company, location, source, course_type, course, batch_name, trainer_name, trainer_mobile, trainer_email, actual_fee, discounted_fee, fee_paid, fee_balance, comments, status, paid_status) VALUES %L RETURNING *',
+                    leads
+                ));
+                res.json(result.rows);
+            } catch (err) {
+                console.error('Error uploading leads:', err);
+                res.status(500).json({ error: 'Failed to upload leads' });
+            } finally {
+                fs.unlinkSync(filePath); // Remove the uploaded file
+            }
+        });
 });
 
 // Update a lead by ID
@@ -244,7 +363,6 @@ app.get('/statuses', async (req, res) => {
     }
 });
 
-
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -254,10 +372,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Scheduled job to send reminders for leads in 'Enquiry' status for more than 7 days
-cron.schedule('0 0 * * *', async () => {
+// Scheduled job to send reminders for leads in 'Enquiry' status for more than 1 day
+cron.schedule('* * * * *', async () => { // This runs the job every minute for testing
     try {
-        const result = await pool.query('SELECT * FROM leads WHERE status = $1 AND created_at < NOW() - INTERVAL \'7 days\'', ['Enquiry']);
+        const result = await pool.query('SELECT * FROM leads WHERE status = $1 AND created_at < NOW() - INTERVAL \'1 day\'', ['Enquiry']);
         const leads = result.rows;
 
         leads.forEach(lead => {
@@ -280,6 +398,9 @@ cron.schedule('0 0 * * *', async () => {
         console.error('Error fetching leads for reminder:', err);
     }
 });
+
+
+
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
