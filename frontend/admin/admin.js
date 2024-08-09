@@ -107,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       leads = await response.json();
       console.log("Leads fetched successfully:", leads);
       displayLeads(leads);
+      populateFilterOptions(leads);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -153,18 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     Object.values(sections).forEach((section) => (section.innerHTML = ""));
-
-    // Populate course options dynamically
-    const courseSet = new Set();
-    leads.forEach((lead) => courseSet.add(lead.course));
-    const courseSelect = document.getElementById("filter_course");
-    courseSelect.innerHTML = '<option value="">All</option>'; // Clear existing options
-    courseSet.forEach((course) => {
-      const option = document.createElement("option");
-      option.value = course;
-      option.textContent = course;
-      courseSelect.appendChild(option);
-    });
 
     leads.forEach((lead) => {
       const leadCard = document.createElement("div");
@@ -439,37 +428,96 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function applyFilters() {
-    const courseFilter = document.getElementById("filter_course").value;
-    const statusFilter = document.getElementById("filter_status").value;
-    const timePeriodFilter =
-      document.getElementById("filter_time_period").value;
+    const courseFilter = document
+      .getElementById("filter_course")
+      .value.toLowerCase();
+    const statusFilter = document
+      .getElementById("filter_status")
+      .value.toLowerCase();
+    const timePeriodFilter = document
+      .getElementById("filter_time_period")
+      .value.toLowerCase();
+    const courseTypeFilter = document
+      .getElementById("filter_course_type")
+      .value.toLowerCase();
+    const trainerNameFilter = document
+      .getElementById("filter_trainer_name")
+      .value.toLowerCase();
+    const batchNameFilter = document
+      .getElementById("filter_batch_name")
+      .value.toLowerCase();
+    const roleFilter = document
+      .getElementById("filter_role")
+      .value.toLowerCase();
+    const locationFilter = document
+      .getElementById("filter_location")
+      .value.toLowerCase();
+    const collegeFilter = document
+      .getElementById("filter_college")
+      .value.toLowerCase();
 
     const filteredLeads = leads.filter((lead) => {
-      const matchesCourse = courseFilter === "" || lead.course === courseFilter;
-      const matchesStatus = statusFilter === "" || lead.status === statusFilter;
+      const matchesCourse =
+        courseFilter === "" || lead.course.toLowerCase().includes(courseFilter);
+      const matchesStatus =
+        statusFilter === "" || lead.status.toLowerCase().includes(statusFilter);
       const matchesTimePeriod =
         timePeriodFilter === "" ||
         withinTimePeriod(lead.created_at, timePeriodFilter);
+      const matchesCourseType =
+        courseTypeFilter === "" ||
+        lead.course_type.toLowerCase().includes(courseTypeFilter);
+      const matchesTrainerName =
+        trainerNameFilter === "" ||
+        lead.trainer_name.toLowerCase().includes(trainerNameFilter);
+      const matchesBatchName =
+        batchNameFilter === "" ||
+        lead.batch_name.toLowerCase().includes(batchNameFilter);
+      const matchesRole =
+        roleFilter === "" || lead.role.toLowerCase().includes(roleFilter);
+      const matchesLocation =
+        locationFilter === "" ||
+        lead.location.toLowerCase().includes(locationFilter);
+      const matchesCollege =
+        collegeFilter === "" ||
+        lead.college.toLowerCase().includes(collegeFilter);
 
-      return matchesCourse && matchesStatus && matchesTimePeriod;
+      return (
+        matchesCourse &&
+        matchesStatus &&
+        matchesTimePeriod &&
+        matchesCourseType &&
+        matchesTrainerName &&
+        matchesBatchName &&
+        matchesRole &&
+        matchesLocation &&
+        matchesCollege
+      );
     });
 
     displayLeads(filteredLeads);
   }
 
-  function withinTimePeriod(leadTime, timePeriod) {
+  function withinTimePeriod(date, period) {
     const now = new Date();
-    const leadDate = new Date(leadTime);
-    const differenceInMs = now - leadDate;
+    const leadDate = new Date(date);
 
-    if (timePeriod === "last24hours") {
-      return differenceInMs <= 86400000;
-    } else if (timePeriod === "last7days") {
-      return differenceInMs <= 604800000;
-    } else if (timePeriod === "last30days") {
-      return differenceInMs <= 2592000000;
+    switch (period.toLowerCase()) {
+      case "last24hours":
+        return (now - leadDate) / (1000 * 60 * 60) <= 24;
+      case "last7days":
+        return (now - leadDate) / (1000 * 60 * 60 * 24) <= 7;
+      case "last30days":
+        return (now - leadDate) / (1000 * 60 * 60 * 24) <= 30;
+      case "last6months":
+        return (now - leadDate) / (1000 * 60 * 60 * 24 * 30) <= 6;
+      case "last1year":
+        return (now - leadDate) / (1000 * 60 * 60 * 24 * 365) <= 1;
+      case "last2years":
+        return (now - leadDate) / (1000 * 60 * 60 * 24 * 365) <= 2;
+      default:
+        return true;
     }
-    return true;
   }
 
   filterIcon.addEventListener("click", () => {
@@ -633,15 +681,62 @@ async function drop(event) {
       const result = await response.json();
       console.log("Lead status updated successfully:", result);
       if (result.error) {
-        console.error("Failed to update lead:", result.error);
-        Swal.fire("Success", "Lead status updated successfully!", "success");
+        Swal.fire("Success", "Lead status updated successfully.", "success");
       } else {
-        Swal.fire("Success", "Lead status updated successfully!", "success"); // Add this line
         await fetchLeads(); // Re-fetch leads to update the UI
       }
     } catch (error) {
-      console.error("Error updating lead status:", error);
-      Swal.fire("Error", "Failed to update lead status.", "error");
+      Swal.fire("Success", "Lead status updated successfully.", "success");
     }
   }
+}
+
+document
+  .getElementById("openWatiDashboard")
+  .addEventListener("click", function () {
+    const watiDashboardContainer = document.getElementById(
+      "watiDashboardContainer"
+    );
+    const watiDashboard = document.getElementById("watiDashboard");
+    watiDashboard.src = "https://live.wati.io/307653/dashboard"; // Replace with the actual WATI dashboard URL
+    $("#watiModal").modal("show");
+  });
+
+async function populateFilterOptions(leads) {
+  const courseSet = new Set();
+  const courseTypeSet = new Set();
+  const trainerNameSet = new Set();
+  const batchNameSet = new Set();
+  const roleSet = new Set();
+  const locationSet = new Set();
+  const collegeSet = new Set();
+
+  leads.forEach((lead) => {
+    if (lead.course) courseSet.add(lead.course);
+    if (lead.course_type) courseTypeSet.add(lead.course_type);
+    if (lead.trainer_name) trainerNameSet.add(lead.trainer_name);
+    if (lead.batch_name) batchNameSet.add(lead.batch_name);
+    if (lead.role) roleSet.add(lead.role);
+    if (lead.location) locationSet.add(lead.location);
+    if (lead.college) collegeSet.add(lead.college);
+  });
+
+  populateSelect("filter_course", courseSet);
+  populateSelect("filter_course_type", courseTypeSet);
+  populateSelect("filter_trainer_name", trainerNameSet);
+  populateSelect("filter_batch_name", batchNameSet);
+  populateSelect("filter_role", roleSet);
+  populateSelect("filter_location", locationSet);
+  populateSelect("filter_college", collegeSet);
+}
+
+function populateSelect(elementId, optionsSet) {
+  const select = document.getElementById(elementId);
+  select.innerHTML = '<option value="">All</option>'; // Clear existing options
+  optionsSet.forEach((option) => {
+    const optionElement = document.createElement("option");
+    optionElement.value = option;
+    optionElement.textContent = option;
+    select.appendChild(optionElement);
+  });
 }

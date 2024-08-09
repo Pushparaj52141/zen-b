@@ -1,5 +1,4 @@
-/* styles.css */
-body {
+styles.css body {
   font-family: "Poppins";
 }
 h1 {
@@ -275,10 +274,6 @@ button {
   border-radius: 0.25rem;
 }
 
-.modal-body {
-  padding: 30px;
-}
-
 .btn-next,
 .btn-prev {
   margin-top: 10px;
@@ -353,7 +348,7 @@ button:hover {
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
-  max-width: 500px;
+  max-width: none;
   border-radius: 10px;
 }
 
@@ -440,4 +435,44 @@ button:hover {
 
 .rotate-icon {
   transform: rotate(100deg);
+}
+
+.custom-modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.custom-modal-content {
+  margin: 5% auto;
+  background: #fff;
+  width: 90%;
+  max-width: 1000px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-modal-header {
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-modal-close {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.custom-modal-body {
+  flex: 1;
+  padding: 10px;
 }

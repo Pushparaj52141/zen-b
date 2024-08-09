@@ -32,7 +32,7 @@ const pool = new Pool({
 
 const jwtSecret = process.env.JWT_SECRET;
 
-// // Middleware to protect routes
+// Middleware to protect routes
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -44,20 +44,6 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-
-// const accountSid = "AC2b0253bb2becc815092242c95ff25665"; // Your Account SID from www.twilio.com/console
-// const authToken = "1619a2c4e6f3928de600819ca30e1666"; // Your Auth Token from www.twilio.com/console
-
-// const client = new twilio(accountSid, authToken);
-
-// client.messages
-//   .create({
-//     body: "Hello from Zenaxa,this is zen",
-//     to: "+917603881811", // Text this number
-//     from: "+16467831665", // From a valid Twilio number
-//   })
-//   .then((message) => console.log(message.sid))
-//   .catch((error) => console.error(error));
 
 // Multer setup for file upload
 const upload = multer({ dest: "uploads/" });
@@ -294,27 +280,28 @@ app.post(
     fs.createReadStream(filePath)
       .pipe(csv())
       .on("data", (row) => {
+        // Push only mandatory and non-null fields, others set to null if not present
         leads.push([
           row.name,
           row.mobile_number,
-          row.email,
-          row.role,
-          row.college_company,
-          row.location,
-          row.source,
-          row.course_type,
+          row.email || null,
+          row.role || null,
+          row.college_company || null,
+          row.location || null,
+          row.source || null,
+          row.course_type || null,
           row.course,
-          row.batch_name,
-          row.trainer_name,
-          row.trainer_mobile,
-          row.trainer_email,
-          row.actual_fee,
-          row.discounted_fee,
-          row.fee_paid,
-          row.fee_balance,
-          row.comments,
-          row.status,
-          row.paid_status,
+          row.batch_name || null,
+          row.trainer_name || null,
+          row.trainer_mobile || null,
+          row.trainer_email || null,
+          row.actual_fee || null,
+          row.discounted_fee || null,
+          row.fee_paid || null,
+          row.fee_balance || null,
+          row.comments || null,
+          row.status || "enquiry",
+          row.paid_status || "not paid",
         ]);
       })
       .on("end", async () => {
@@ -581,7 +568,7 @@ cron.schedule("* * * * *", async () => {
         from: process.env.EMAIL_USER,
         to: lead.email,
         subject: "Follow-up on Your Enquiry",
-        text: `Hi ${lead.name},\n\nWe noticed that you haven't enrolled in any course yet. Please let us know if you need any assistance.\n\nBest regards,\Urbancode Team`,
+        text: `Hi ${lead.name},\n\nWe noticed that you haven't enrolled in any course yet. Please let us know if you need any assistance.\n\nBest regards,\nUrbancode Team`,
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
